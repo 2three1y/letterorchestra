@@ -14,6 +14,7 @@ I got the idea from Orca by Hundred Rabbits, where every letter is an instrument
 - Numbers are drums: 1 kick, 2 snare, 3 hats, and the rest are combos.
 - ! is a crash, ? is a rising blip, . is a little click.
 - Play it back loops your whole text at whatever tempo you set (60 to 200 BPM). Stop or Escape ends it.
+- Export WAV saves one pass of your text as letter-orchestra.wav (16-bit, 44.1 kHz stereo) at your tempo and instrument, ready to drop into a DAW. The WAV encoder is hand-written, no libraries.
 
 ## Accessibility
 

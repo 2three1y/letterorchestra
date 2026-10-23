@@ -165,6 +165,51 @@ Array.prototype.forEach.call(document.querySelectorAll(".ex"),function(b){
 document.addEventListener("keydown",function(e){ if(e.key==="Escape"||e.key==="Esc") stop(); });
 ["pointerdown","touchend","keydown"].forEach(function(ev){ document.addEventListener(ev,unlock,{once:true,passive:true}); });
 
-window.LetterOrchestra={playChar:playChar,play:play,stop:stop,isPlaying:function(){return playing;},letterFreq:letterFreq};
+
+// Export WAV: render one pass offline, encode 16-bit PCM 44.1 kHz ourselves.
+var exportBtn=$("export"), exportStatus=$("export-status"), lastWav=null;
+function makeNoise(c){ var len=c.sampleRate, b=c.createBuffer(1,len,c.sampleRate), d=b.getChannelData(0); for(var i=0;i<len;i++) d[i]=Math.random()*2-1; return b; }
+function encodeWav(buf){
+  var ch=buf.numberOfChannels, sr=buf.sampleRate, n=buf.length, bytes=n*ch*2;
+  var ab=new ArrayBuffer(44+bytes), v=new DataView(ab), p=0;
+  function s(str){ for(var i=0;i<str.length;i++) v.setUint8(p++,str.charCodeAt(i)); }
+  function u32(x){ v.setUint32(p,x,true); p+=4; } function u16(x){ v.setUint16(p,x,true); p+=2; }
+  s("RIFF"); u32(36+bytes); s("WAVE"); s("fmt "); u32(16); u16(1); u16(ch); u32(sr); u32(sr*ch*2); u16(ch*2); u16(16);
+  s("data"); u32(bytes);
+  var chans=[]; for(var c=0;c<ch;c++) chans.push(buf.getChannelData(c));
+  for(var i=0;i<n;i++) for(var c2=0;c2<ch;c2++){ var x=Math.max(-1,Math.min(1,chans[c2][i])); v.setInt16(p,x<0?x*0x8000:x*0x7FFF,true); p+=2; }
+  return new Blob([ab],{type:"audio/wav"});
+}
+function renderWav(){
+  var OAC=window.OfflineAudioContext||window.webkitOfflineAudioContext;
+  var s=text.value;
+  if(!OAC||!s.length) return Promise.resolve(null);
+  var sr=44100, dur=s.length*stepDur()+1.6;
+  var off=new OAC(2,Math.ceil(dur*sr),sr);
+  var saved=[ctx,master,noiseBuf];
+  ctx=off; noiseBuf=makeNoise(off);
+  master=off.createGain(); master.gain.value=0.5;
+  var comp=off.createDynamicsCompressor(); master.connect(comp); comp.connect(off.destination);
+  try{ for(var i=0;i<s.length;i++) playChar(s.charAt(i),0.05+i*stepDur()); }
+  finally{ ctx=saved[0]; master=saved[1]; noiseBuf=saved[2]; }
+  return new Promise(function(res,rej){
+    off.oncomplete=function(e){ res(e.renderedBuffer); };
+    var pr=off.startRendering(); if(pr&&pr.then) pr.then(res,rej);
+  }).then(encodeWav);
+}
+exportBtn.addEventListener("click",function(){
+  if(!text.value.length){ exportStatus.textContent="Type something first, then export."; return; }
+  exportStatus.textContent="Rendering...";
+  renderWav().then(function(blob){
+    if(!blob){ exportStatus.textContent="This browser can't export audio, sorry."; return; }
+    lastWav=blob;
+    var url=URL.createObjectURL(blob), a=document.createElement("a");
+    a.href=url; a.download="letter-orchestra.wav"; a.style.display="none";
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(function(){ URL.revokeObjectURL(url); },60000);
+    exportStatus.textContent="Saved letter-orchestra.wav";
+  }).catch(function(){ exportStatus.textContent="Export failed, sorry. Try again?"; });
+});
+window.LetterOrchestra={playChar:playChar,play:play,stop:stop,isPlaying:function(){return playing;},letterFreq:letterFreq,renderWav:renderWav,lastWav:function(){return lastWav;}};
 renderPreview();
 })();

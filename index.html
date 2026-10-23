@@ -24,6 +24,11 @@
       <button type="button" id="loop" aria-pressed="true">Loop</button>
     </div>
 
+    <div class="row export">
+      <button type="button" id="export">Export WAV</button>
+      <p id="export-status" class="status"></p>
+    </div>
+
     <div class="field">
       <label for="tempo">Tempo: <span id="tempo-val">120</span> BPM</label>
       <input type="range" id="tempo" min="60" max="200" step="5" value="120">
@@ -60,6 +65,7 @@
       <li>Numbers are drums: 1 is a kick, 2 a snare, 3 hats, and the rest are mixes. Spam 1212 for instant beat.</li>
       <li>! is a crash, ? is a rising boop, and . is a tiny click.</li>
       <li>Play it back plays your whole text as a loop. Escape or Stop shuts it up.</li>
+      <li>Export WAV saves one pass of your text as a WAV file at your tempo and instrument, so you can drop it straight into a DAW. Yes, your group chat can now be a sample pack.</li>
     </ul>
     <p>Nothing talks over your screen reader while you type. The sound is the feedback. No sound plays until you press or type something.</p>
   </section>
