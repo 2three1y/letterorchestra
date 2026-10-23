@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<title>Letter Orchestra</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<main>
+  <h1>Letter Orchestra</h1>
+  <p class="intro">Type anything. Every letter plays a note. Hit Play it back to hear the whole thing as a song.</p>
+
+  <section aria-labelledby="play-h">
+    <h2 id="play-h">Play</h2>
+    <label for="text">Your text (each letter plays a sound)</label>
+    <textarea id="text" rows="4" autocomplete="off" autocapitalize="off" spellcheck="false"></textarea>
+    <div id="preview" class="preview" aria-hidden="true"></div>
+
+    <div class="row">
+      <button type="button" id="play">Play it back</button>
+      <button type="button" id="stop">Stop</button>
+      <button type="button" id="loop" aria-pressed="true">Loop</button>
+    </div>
+
+    <div class="field">
+      <label for="tempo">Tempo: <span id="tempo-val">120</span> BPM</label>
+      <input type="range" id="tempo" min="60" max="200" step="5" value="120">
+    </div>
+
+    <div class="field">
+      <label for="instrument">Instrument</label>
+      <select id="instrument">
+        <option value="chiptune">Chiptune</option>
+        <option value="dreamy">Dreamy</option>
+        <option value="bass">Bass</option>
+      </select>
+    </div>
+  </section>
+
+  <section aria-labelledby="ex-h">
+    <h2 id="ex-h">Try a phrase</h2>
+    <ul class="examples">
+      <li><button type="button" class="ex">hello world!</button></li>
+      <li><button type="button" class="ex">carter 2three1y</button></li>
+      <li><button type="button" class="ex">boots and cats 1234</button></li>
+      <li><button type="button" class="ex">la la la. la la la?</button></li>
+      <li><button type="button" class="ex">bonk 1 bonk 2 bonk 3!</button></li>
+    </ul>
+  </section>
+
+  <section aria-labelledby="how-h">
+    <h2 id="how-h">How it works</h2>
+    <p>I made this because I saw Orca, a music thing where every letter is an instrument, and I was like ok but what if typing a text message was a whole song. So now it is. You are welcome.</p>
+    <ul>
+      <li>Letters play notes from a scale that basically can't sound bad. I tried. I typed my whole name and it slapped.</li>
+      <li>Vowels (a, e, i, o, u) get a soft pad sound. Consonants get the plucky sound, and the Instrument menu changes that one.</li>
+      <li>Space is a rest, so you get a little pause.</li>
+      <li>Numbers are drums: 1 is a kick, 2 a snare, 3 hats, and the rest are mixes. Spam 1212 for instant beat.</li>
+      <li>! is a crash, ? is a rising boop, and . is a tiny click.</li>
+      <li>Play it back plays your whole text as a loop. Escape or Stop shuts it up.</li>
+    </ul>
+    <p>Nothing talks over your screen reader while you type. The sound is the feedback. No sound plays until you press or type something.</p>
+  </section>
+</main>
+<footer>
+  <p>Made by Carter (2three1y). <a href="https://tab.bot">Co-written with Tab</a>.</p>
+</footer>
+<script src="app.js"></script>
+</body>
+</html>

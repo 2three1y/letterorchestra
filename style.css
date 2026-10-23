@@ -1,0 +1,24 @@
+:root{--bg:#fbf8f2;--fg:#1d1b20;--muted:#4a4650;--card:#fff;--line:#c9c2d4;--accent:#5b2ccf;--accent-fg:#fff;--hl:#ffd84a;--focus:#0a58ff;font-size:112.5%}
+@media (prefers-color-scheme:dark){:root{--bg:#121016;--fg:#f2eef8;--muted:#c4bdd0;--card:#1d1a24;--line:#4b4458;--accent:#b79cff;--accent-fg:#14101c;--hl:#7a5f00;--focus:#7fb2ff}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;line-height:1.5}
+main,footer{max-width:42rem;margin:0 auto;padding:1rem 1.25rem}
+h1{font-size:2rem;margin:.5rem 0}
+h2{font-size:1.35rem;margin:1.75rem 0 .5rem}
+label{display:block;font-weight:600;margin:.75rem 0 .35rem}
+textarea,select{width:100%;min-height:44px;font:inherit;color:var(--fg);background:var(--card);border:2px solid var(--line);border-radius:10px;padding:.6rem}
+textarea{min-height:6rem;resize:vertical}
+button{min-height:44px;min-width:44px;font:inherit;font-weight:600;padding:.55rem 1.1rem;border-radius:10px;border:2px solid var(--accent);background:var(--accent);color:var(--accent-fg);cursor:pointer}
+button[aria-pressed="false"]{background:transparent;color:var(--fg)}
+.ex{background:var(--card);color:var(--fg);border-color:var(--line);font-weight:500}
+input[type=range]{width:100%;min-height:44px;accent-color:var(--accent)}
+.row{display:flex;flex-wrap:wrap;gap:.6rem;margin:1rem 0}
+.examples{list-style:none;padding:0;display:flex;flex-wrap:wrap;gap:.5rem}
+:focus-visible{outline:4px solid var(--focus);outline-offset:3px}
+textarea:focus,select:focus,input:focus{outline:4px solid var(--focus);outline-offset:2px}
+.preview{font-family:ui-monospace,Menlo,monospace;font-size:1.25rem;min-height:2rem;margin-top:.5rem;word-break:break-all;white-space:pre-wrap}
+.preview span{border-radius:4px;transition:background-color .15s}
+.preview span.on{background:var(--hl)}
+footer{color:var(--muted);border-top:1px solid var(--line);margin-top:2rem}
+a{color:var(--accent)}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
