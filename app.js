@@ -9,7 +9,7 @@ var INSTRUMENTS={chiptune:"Chiptune",dreamy:"Dreamy",bass:"Bass",piano:"Piano","
 
 /* ---------- Audio core ---------- */
 var AC=window.AudioContext||window.webkitAudioContext;
-var ctx=null, inBus=null, master=null, fx=null, noiseBuf=null, silentEl=null, crushReady=false;
+var ctx=null, inBus=null, master=null, lettersBus=null, masterVol=1, fx=null, noiseBuf=null, silentEl=null, crushReady=false;
 var debug=[]; // [{ch,inst,waves,t}] for tests
 
 function makeNoise(c){ var len=c.sampleRate, b=c.createBuffer(1,len,c.sampleRate), d=b.getChannelData(0); for(var i=0;i<len;i++) d[i]=Math.random()*2-1; return b; }
@@ -18,8 +18,8 @@ function ensureCtx(){
   if(ctx||!AC) return ctx;
   try{ ctx=new AC({latencyHint:"interactive"}); }catch(e){ ctx=new AC(); }
   noiseBuf=makeNoise(ctx);
-  inBus=ctx.createGain();
-  master=ctx.createGain(); master.gain.value=0.5;
+  inBus=ctx.createGain(); lettersBus=ctx.createGain(); lettersBus.connect(inBus);
+  master=ctx.createGain(); master.gain.value=0.5*masterVol;
   var comp=ctx.createDynamicsCompressor(); master.connect(comp); comp.connect(ctx.destination);
   fx=buildFx(ctx,inBus,master,fxState);
   loadCrusher(ctx).then(function(ok){ crushReady=ok; if(ok&&fxState.crush.on) rebuildFx(); });
@@ -241,7 +241,7 @@ function sound(c,out,ch,kind,t){
 function playChar(ch,kind,t){
   if(!ctx) return false;
   t=t||ctx.currentTime;
-  var ok=sound(ctx,inBus,ch,kind||inst.value,t);
+  var ok=sound(ctx,lettersBus||inBus,ch,kind||inst.value,t);
   if(ok&&KICKS.indexOf(ch)>=0&&fx) pump(fx,fxState,t);
   return ok;
 }
@@ -431,11 +431,11 @@ function schedule(){
     nextTime+=stepDur(); step++;
   }
 }
-function play(){
+function play(t0){
   unlock(); if(!ctx) return;
   stop();
   if(!text.value.replace(/\n/g,"").length) return;
-  playing=true; step=0; nextTime=ctx.currentTime+0.06;
+  playing=true; step=0; nextTime=(typeof t0==="number")?t0:ctx.currentTime+0.06;
   schedule(); if(playing&&!timer) timer=setInterval(schedule,25);
   document.body.setAttribute("data-playing","true");
 }
@@ -446,7 +446,7 @@ function stop(){
   highlight(null);
   document.body.removeAttribute("data-playing");
 }
-Array.prototype.forEach.call(document.querySelectorAll(".play"),function(b){ b.addEventListener("click",play); });
+Array.prototype.forEach.call(document.querySelectorAll(".play"),function(b){ b.addEventListener("click",function(){ play(); }); });
 Array.prototype.forEach.call(document.querySelectorAll(".stop"),function(b){ b.addEventListener("click",stop); });
 loopBtn.addEventListener("click",function(){ loopBtn.setAttribute("aria-pressed",looping()?"false":"true"); });
 function syncTempo(){ tempoVal.textContent=tempo.value; tempo.setAttribute("aria-valuetext",tempo.value+" BPM"); if(fx&&fx.refs.delay) fx.refs.delay.dl.delayTime.setTargetAtTime(Math.min(1.9,stepDur()*1.5),ctx.currentTime,0.05); }
@@ -755,23 +755,27 @@ function encodeWav(buf){
   for(var i=0;i<n;i++) for(var c2=0;c2<ch;c2++){ var x=Math.max(-1,Math.min(1,chans[c2][i])); v.setInt16(p,x<0?x*0x8000:x*0x7FFF,true); p+=2; }
   return new Blob([ab],{type:"audio/wav"});
 }
-function renderBuffer(){
+function renderBuffer(opts){
+  opts=opts||{};
   var OAC=window.OfflineAudioContext||window.webkitOfflineAudioContext;
   var T=tracks(), len=0; T.forEach(function(t){ if(t.s.length>len) len=t.s.length; });
-  if(!OAC||!len) return Promise.resolve(null);
-  var sr=44100, sd=stepDur(), dur=len*sd+3.2;
+  var extra=opts.studio&&opts.studio.duration>0?opts.studio:null;
+  if(!OAC||(!len&&!extra)) return Promise.resolve(null);
+  var sr=44100, sd=stepDur(), dur=Math.max(len*sd,extra?extra.duration:0)+3.2;
   var off=new OAC(2,Math.ceil(dur*sr),sr);
   var need=fxState.crush.on?loadCrusher(off):Promise.resolve(false);
   return need.then(function(wk){
     var savedNoise=noiseBuf; noiseBuf=makeNoise(off);
-    var bus=off.createGain(), m=off.createGain(); m.gain.value=0.5;
+    var bus=off.createGain(), m=off.createGain(); m.gain.value=0.5*masterVol;
     var comp=off.createDynamicsCompressor(); m.connect(comp); comp.connect(off.destination);
     var chain=buildFx(off,bus,m,fxState,wk);
+    var lb=off.createGain(); lb.gain.value=(typeof opts.lettersGain==="number")?opts.lettersGain:1; lb.connect(bus);
     try{
+      if(extra) extra.schedule(off,bus,chain,0.05);
       for(var step=0;step<len;step++){
         var t=0.05+step*sd;
         T.forEach(function(tr){ var L=tr.s.length; if(!L) return; var col=looping()?step%L:step; if(col>=L) return;
-          var ch=tr.s.charAt(col); sound(off,bus,ch,insts[tr.start+col]||inst.value,t);
+          var ch=tr.s.charAt(col); sound(off,lb,ch,insts[tr.start+col]||inst.value,t);
           if(KICKS.indexOf(ch)>=0) pump(chain,fxState,t); });
         if(step%2===0) pump(chain,fxState,t);
       }
@@ -784,6 +788,7 @@ function renderBuffer(){
 }
 function renderWav(){ return renderBuffer().then(function(b){ return b?encodeWav(b):null; }); }
 exportBtn.addEventListener("click",function(){
+  if(window.LOStudio&&window.LOStudio.downloadAudio){ window.LOStudio.downloadAudio(exportStatus); return; }
   if(!text.value.replace(/\n/g,"").length){ exportStatus.textContent="Type something first, then export."; return; }
   exportStatus.textContent="Rendering...";
   renderWav().then(function(blob){
@@ -802,5 +807,37 @@ window.LetterOrchestra={playChar:playChar,play:play,stop:stop,isPlaying:function
   fxNames:function(){return fx?fx.names.slice():[];},fxState:function(){return JSON.parse(JSON.stringify(fxState));},
   insts:function(){return insts.slice();},debug:function(){return debug.slice();},clearDebug:function(){debug=[];},
   state:function(){return ctx?ctx.state:"none";},crushReady:function(){return crushReady;}};
+/* ---------- Core hooks for the studio (studio.js) ---------- */
+function getSongState(){
+  return {text:text.value, insts:insts.slice(0,text.value.length), tempo:Number(tempo.value), instrument:inst.value, loop:looping(), fx:JSON.parse(JSON.stringify(fxState))};
+}
+function setSongState(s){
+  if(!s) return;
+  stop();
+  if(s.tempo){ var tv=Math.max(60,Math.min(200,Math.round(Number(s.tempo)/5)*5)); if(tv) tempo.value=tv; syncTempo(); }
+  if(s.instrument&&INSTRUMENTS[s.instrument]) inst.value=s.instrument;
+  if(typeof s.loop==="boolean") loopBtn.setAttribute("aria-pressed",s.loop?"true":"false");
+  if(s.fx) Object.keys(fxState).forEach(function(n){ var f=s.fx[n]; if(f){ fxState[n].on=!!f.on; var v=Number(f.v); if(v>=0&&v<=100) fxState[n].v=v; } syncFxUI(n); });
+  var t=typeof s.text==="string"?s.text.slice(0,20000):"", il=Array.isArray(s.insts)?s.insts.map(function(k){ return INSTRUMENTS[k]?k:inst.value; }):null;
+  setText(t,il&&il.length>=t.length?il:null);
+  rebuildFx();
+}
+window.LetterOrchestraCore={
+  ensure:function(){ return unlock(); }, ctx:function(){ return ctx; }, running:running,
+  inBus:function(){ return inBus; }, lettersBus:function(){ return lettersBus; },
+  sound:sound, voice:voice, pump:function(chain,t){ pump(chain,fxState,t); }, liveFx:function(){ return fx; },
+  KICKS:KICKS, INSTRUMENTS:INSTRUMENTS, tempoEl:tempo, syncTempo:syncTempo, stepDur:stepDur,
+  playLetters:function(t0){ play(t0); }, stopLetters:stop, isPlaying:function(){ return playing; },
+  hasLetters:function(){ return !!text.value.replace(/\n/g,"").length; }, textEl:text,
+  getSongState:getSongState, setSongState:setSongState, encodeWav:encodeWav, renderBuffer:renderBuffer,
+  setMasterVol:function(v){ masterVol=v; if(master&&ctx) master.gain.setTargetAtTime(0.5*v,ctx.currentTime,0.02); },
+  setLettersVol:function(v){ if(lettersBus&&ctx) lettersBus.gain.setTargetAtTime(v,ctx.currentTime,0.02); },
+  onChange:function(fn){ changeFns.push(fn); }
+};
+var changeFns=[]; function changed(){ changeFns.forEach(function(f){ try{ f(); }catch(e){} }); }
+text.addEventListener("input",changed); tempo.addEventListener("change",changed); inst.addEventListener("change",changed);
+loopBtn.addEventListener("click",changed);
+Object.keys(fxState).forEach(function(n){ $("fx-"+n).addEventListener("click",changed); $("fx-"+n+"-amt").addEventListener("change",changed); });
+Array.prototype.forEach.call(document.querySelectorAll(".demo,.ex"),function(b){ b.addEventListener("click",changed); });
 renderPreview(); updateSoundStatus();
 })();

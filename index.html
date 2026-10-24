@@ -18,6 +18,23 @@
     <p id="sound-status" class="status">Sound is off. Press Turn sound on.</p>
   </div>
 
+  <section aria-labelledby="song-h">
+    <h2 id="song-h">Song</h2>
+    <label for="song-title">Song title</label>
+    <input type="text" id="song-title" autocomplete="off" autocapitalize="words" spellcheck="false" placeholder="Untitled song">
+    <p class="hint" id="song-file-hint">Files save as <span id="song-file-name">Untitled song</span>.</p>
+    <div class="row">
+      <button type="button" id="song-play">Play song</button>
+      <button type="button" id="song-stop">Stop song</button>
+      <button type="button" id="song-save">Save song</button>
+      <button type="button" id="song-open">Open song</button>
+      <button type="button" id="song-audio">Download as audio</button>
+      <button type="button" id="song-new">New song</button>
+    </div>
+    <input type="file" id="song-file" class="visually-hidden" accept=".json,application/json" tabindex="-1" aria-hidden="true">
+    <p id="studio-status" class="status" role="status"></p>
+  </section>
+
   <section aria-labelledby="play-h">
     <h2 id="play-h">Play</h2>
     <label for="text">Your text (each letter plays a sound, each line is a track)</label>
@@ -64,6 +81,80 @@
     </div>
   </section>
 
+  <section aria-labelledby="seq-h">
+    <h2 id="seq-h">Step sequencer</h2>
+    <p class="hint">Each track has 16 steps. Turn a step on and that sound plays on that step. Arrow keys move between steps and tracks.</p>
+    <div class="row">
+      <button type="button" id="seq-play">Play pattern</button>
+      <button type="button" id="seq-stop">Stop pattern</button>
+    </div>
+    <div class="field">
+      <label for="seq-tempo">Tempo: <span id="seq-tempo-val">120</span> BPM</label>
+      <input type="range" id="seq-tempo" min="60" max="200" step="5" value="120">
+    </div>
+    <ul id="seq-tracks" class="seq-tracks"></ul>
+    <fieldset class="fx">
+      <legend>Add a track</legend>
+      <label for="seq-add-sound">Sound</label>
+      <select id="seq-add-sound"></select>
+      <div class="row"><button type="button" id="seq-add">Add track</button></div>
+    </fieldset>
+    <div class="field">
+      <label for="seq-repeats">Pattern repeats in the audio file</label>
+      <select id="seq-repeats">
+        <option value="1">1 time</option><option value="2">2 times</option><option value="4" selected>4 times</option><option value="8">8 times</option><option value="16">16 times</option>
+      </select>
+    </div>
+  </section>
+
+  <section aria-labelledby="roll-h">
+    <h2 id="roll-h">Piano roll</h2>
+    <p class="hint">Write melodies with any note, for tracks that play instruments.</p>
+    <label for="roll-track">Track</label>
+    <select id="roll-track"></select>
+    <h3 id="roll-notes-h">Notes</h3>
+    <ul id="roll-notes" class="roll-notes" aria-labelledby="roll-notes-h"></ul>
+    <p id="roll-empty" class="hint">No notes yet.</p>
+    <fieldset class="fx" id="roll-edit">
+      <legend id="roll-edit-legend">Selected note: none</legend>
+      <div class="row roll-tools">
+        <button type="button" data-act="up">Note up</button>
+        <button type="button" data-act="down">Note down</button>
+        <button type="button" data-act="oct-up">Octave up</button>
+        <button type="button" data-act="oct-down">Octave down</button>
+        <button type="button" data-act="left">Move earlier</button>
+        <button type="button" data-act="right">Move later</button>
+        <button type="button" data-act="longer">Longer</button>
+        <button type="button" data-act="shorter">Shorter</button>
+        <button type="button" data-act="hear">Hear note</button>
+        <button type="button" data-act="delete">Delete note</button>
+      </div>
+    </fieldset>
+    <fieldset class="fx">
+      <legend>Add a note</legend>
+      <label for="roll-add-pitch">Note</label>
+      <select id="roll-add-pitch"></select>
+      <label for="roll-add-step">Step</label>
+      <select id="roll-add-step"></select>
+      <label for="roll-add-len">Length in steps</label>
+      <select id="roll-add-len"></select>
+      <div class="row"><button type="button" id="roll-add">Add note</button></div>
+    </fieldset>
+    <h3 id="roll-grid-h">Grid</h3>
+    <label for="roll-octave">Grid octave</label>
+    <select id="roll-octave"></select>
+    <ul id="roll-grid" class="roll-grid" aria-labelledby="roll-grid-h"></ul>
+  </section>
+
+  <section aria-labelledby="mix-h">
+    <h2 id="mix-h">Mixer</h2>
+    <div class="field">
+      <label for="mix-master">Master volume: <span id="mix-master-val">100</span>%</label>
+      <input type="range" id="mix-master" min="0" max="100" step="5" value="100">
+    </div>
+    <ul id="mix-tracks" class="mix-tracks"></ul>
+  </section>
+
   <section aria-labelledby="guide-h">
     <h2 id="guide-h" tabindex="-1">Guide</h2>
     <p>I made this because I saw Orca, a music thing where every letter is an instrument, and I was like ok but what if typing a text message was a whole song. So now it is. Here's how to drive it.</p>
@@ -94,20 +185,46 @@
     <p>Pick an instrument, then type. The letters remember the instrument they were typed with. Switch instruments mid-typing to stack sounds in one track. There are 17: Chiptune, Dreamy, Bass, Piano, 808 Bass, Pluck, Super Saw, Bell, Organ, Flute, Strings Pad, Steel Drum, Guitar Pluck, Choir Ooh, Wobble Bass, Keys and Reese bass. All made from scratch, no samples. Wobble Bass wobbles in time with your tempo, so it's dubstep ready. Drums and punctuation always sound the same.</p>
 
     <h3>Effects</h3>
-    <p>The Effects section has seven effects, a bit like the mixer in FL Studio. Each one has a button to turn it on and a slider for how strong it is. They work on live typing, on playback and on Export WAV. Effects are for the whole song, not single letters. Pro tip: Bitcrusher plus Reverb plus Filter sweep is instant lo-fi.</p>
+    <p>The Effects section has seven effects, a bit like the mixer in FL Studio. Each one has a button to turn it on and a slider for how strong it is. They work on live typing, on playback, on the pattern and on the audio file. Effects are for the whole song, not single letters. Pro tip: Bitcrusher plus Reverb plus Filter sweep is instant lo-fi.</p>
 
     <h3>Demos</h3>
-    <p>Each demo button loads a starter song in a genre, with its own tempo, instruments and effects. It replaces your text, so export first if you made a banger. Then press Play it back. Read the lines to see how it's built, then wreck it and make it yours.</p>
+    <p>Each demo button loads a starter song in a genre, with its own tempo, instruments and effects. It replaces your text, so save first if you made a banger. Then press Play it back. Read the lines to see how it's built, then wreck it and make it yours.</p>
 
-    <h3>Export WAV</h3>
-    <p>Export WAV saves one pass of your song as letter-orchestra.wav, with the instruments and effects you picked, so you can drop it straight into a DAW. Yes, your group chat can now be a sample pack.</p>
+    <h3>Song title, saving and audio</h3>
+    <ul>
+      <li>Type a name in Song title. Your files get that name, so a song called Tab downloads as Tab.wav and Tab.json. No title means Untitled song.</li>
+      <li>Save song downloads a song file (.json) with everything in it: letters, pattern, piano roll notes, mixer, effects and tempo. Open song loads one back.</li>
+      <li>It also saves by itself in this browser as you go, so closing the tab doesn't wipe your song. New song starts fresh (it asks first).</li>
+      <li>Download as audio (or Export WAV, same thing) makes a WAV file of your letters plus the pattern, with your effects and mixer settings, so you can drop it straight into a DAW. Yes, your group chat can now be a sample pack.</li>
+      <li>Play song plays the letters and the pattern together, in time. Stop song stops both.</li>
+    </ul>
+
+    <h3>Step sequencer</h3>
+    <ul>
+      <li>Each track is one sound with 16 steps, four steps per beat. Every step is a button that says its track, its number and on or off, like "Kick, step 5, off". Double tap to flip it.</li>
+      <li>It starts with Kick, Snare, Closed hat, Bass and Lead. Add a track picks any drum or any of the 17 instruments. Each track also has Clear and Remove.</li>
+      <li>With a keyboard, arrow left and right move between steps, up and down jump to the same step on the next track.</li>
+      <li>Play pattern loops it. The tempo slider here is the same tempo as the Play section.</li>
+    </ul>
+
+    <h3>Piano roll</h3>
+    <ul>
+      <li>Pick an instrument track, then add notes with any pitch from C2 to C6, any step, any length.</li>
+      <li>Notes is a list, each note reads like "E4, step 3, length 2". Double tap one to select it, then use Note up, Note down, Octave up, Octave down, Move earlier, Move later, Longer, Shorter, Hear note or Delete note.</li>
+      <li>Grid shows one octave at a time. Every square is a button like "C4, step 3, off". Double tap to add or remove a note.</li>
+      <li>Turning on an instrument track's step in the sequencer adds its default note there, and it shows up in the piano roll too.</li>
+    </ul>
+
+    <h3>Mixer</h3>
+    <p>Every track, plus Letters (your typed lines), gets a volume slider, a Mute button and a Solo button. Solo one or more and only those play. Master volume turns the whole thing up or down, and it all goes into the audio file too.</p>
 
     <h3>VoiceOver tips</h3>
     <ul>
       <li>Nothing talks over VoiceOver while you type. The sound is the feedback.</li>
       <li>Use whatever typing style you like (standard, touch or direct touch). The sound plays as each character goes in.</li>
       <li>If VoiceOver's voice makes the notes go quiet, turn Audio Ducking off in the VoiceOver Audio settings.</li>
-      <li>Jump around by headings: Play, Guide, Effects, Demos and Try a phrase are all headings.</li>
+      <li>Jump around by headings: Song, Play, Step sequencer, Piano roll, Mixer, Guide, Effects, Demos and Try a phrase are all headings. Each sequencer track is a smaller heading too.</li>
+      <li>Studio changes (a step flipped, a note moved, a file saved) are read out once in a short message. Typing letters stays quiet.</li>
       <li>The sliders go in steps of 5. Swipe up or down on them to change the value.</li>
       <li>No sound ever plays until you press or type something.</li>
     </ul>
@@ -202,5 +319,6 @@
   <p>Made by Carter (2three1y). <a href="https://tab.bot">Co-written with Tab</a>.</p>
 </footer>
 <script src="app.js"></script>
+<script src="studio.js"></script>
 </body>
 </html>
