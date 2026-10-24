@@ -14,7 +14,7 @@ I got the idea from Orca by Hundred Rabbits, where every letter is an instrument
 - Numbers are drums: 1 kick, 2 snare, 3 closed hat, 4 open hat, 5 and 6 toms, 7 8 9 0 are combos.
 - Space is a rest. ! is a crash, ? is a rising blip, . is a little click.
 - Every line is a track, and all lines play at the same time. Drums on one line, bass on the next, melody on the next.
-- Letters remember the instrument they were typed with. Switch instruments mid-typing to stack sounds in one track. Instruments: Chiptune, Dreamy, Bass, Keys, Supersaw, Bell, 808 and Reese bass.
+- Letters remember the instrument they were typed with. Switch instruments mid-typing to stack sounds in one track. There are 17 instruments: Chiptune, Dreamy, Bass, Piano, 808 Bass, Pluck, Super Saw, Bell, Organ, Flute, Strings Pad, Steel Drum, Guitar Pluck (real Karplus-Strong string math), Choir Ooh, Wobble Bass, Keys and Reese bass.
 - Play it back loops everything at your tempo (60 to 200 BPM). Stop or Escape ends it. You can edit while it plays.
 - Export WAV saves one pass as letter-orchestra.wav (16-bit, 44.1 kHz stereo) with your instruments and effects, ready to drop into a DAW. The WAV encoder is hand-written, no libraries.
 

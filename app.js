@@ -5,7 +5,7 @@ var text=$("text"), preview=$("preview"), tempo=$("tempo"), tempoVal=$("tempo-va
     loopBtn=$("loop"), soundBtn=$("sound-on"), soundStatus=$("sound-status"), demoStatus=$("demo-status");
 
 /* ---------- Instruments ---------- */
-var INSTRUMENTS={chiptune:"Chiptune",dreamy:"Dreamy",bass:"Bass",keys:"Keys",supersaw:"Supersaw",bell:"Bell","808":"808",reese:"Reese bass"};
+var INSTRUMENTS={chiptune:"Chiptune",dreamy:"Dreamy",bass:"Bass",piano:"Piano","808":"808 Bass",pluck:"Pluck",supersaw:"Super Saw",bell:"Bell",organ:"Organ",flute:"Flute",strings:"Strings Pad",steel:"Steel Drum",guitar:"Guitar Pluck",choir:"Choir Ooh",wobble:"Wobble Bass",keys:"Keys",reese:"Reese bass"};
 
 /* ---------- Audio core ---------- */
 var AC=window.AudioContext||window.webkitAudioContext;
@@ -90,6 +90,16 @@ function lp(c,freq,q,dest){ var f=c.createBiquadFilter(); f.type="lowpass"; f.fr
 var satCurve=null;
 function sat(c){ if(!satCurve){ satCurve=new Float32Array(1024); for(var i=0;i<1024;i++){ var x=i/511.5-1; satCurve[i]=Math.tanh(2.2*x); } } var w=c.createWaveShaper(); w.curve=satCurve; return w; }
 
+// Guitar Pluck: Karplus-Strong. A short noise burst fed back through a one-period delay with a soft lowpass.
+var ksCache={};
+function ksBuffer(c,f,dur){
+  var key=c.sampleRate+":"+f.toFixed(2)+":"+dur; if(ksCache[key]) return ksCache[key];
+  var sr=c.sampleRate, n=Math.floor(sr*dur), N=Math.max(2,Math.round(sr/f)), b=c.createBuffer(1,n,sr), d=b.getChannelData(0), line=new Float32Array(N), p=0, damp=0.996;
+  for(var i=0;i<N;i++) line[i]=Math.random()*2-1;
+  for(var j=0;j<n;j++){ var q=(p+1)%N, y=line[p]; d[j]=y; line[p]=damp*0.5*(y+line[q]); p=q; }
+  var fade=Math.floor(sr*0.05); for(var k=0;k<fade;k++) d[n-1-k]*=k/fade;
+  ksCache[key]=b; return b;
+}
 // Every voice returns the list of oscillator wave types it used (for tests).
 function voice(c,out,kind,f,t,vowel){
   var g=c.createGain(); g.connect(out); var W=[];
@@ -132,6 +142,53 @@ function voice(c,out,kind,f,t,vowel){
     var r=lp(c,vowel?500:900,3,g);
     o("sawtooth",f/2,1.6,r,-18); o("sawtooth",f/2,1.6,r,18);
     env(g,t,0.03,vowel?0.22:0.28,1.4);
+    break;
+  case "piano":
+    var pf=lp(c,4200,0.7,g); pf.frequency.setValueAtTime(4200,t); pf.frequency.exponentialRampToValueAtTime(1100,t+0.8);
+    o("triangle",f*2,vowel?2.2:1.6,pf); o("sine",f*2,vowel?2.2:1.6,pf,5); o("sine",f*4,0.4,pf);
+    env(g,t,vowel?0.02:0.003,vowel?0.2:0.3,vowel?2:1.45);
+    break;
+  case "pluck":
+    var pl=lp(c,5000,2,g); pl.frequency.setValueAtTime(5000,t); pl.frequency.exponentialRampToValueAtTime(300,t+(vowel?0.5:0.15));
+    o("sawtooth",f*2,vowel?0.9:0.4,pl); env(g,t,0.003,0.22,vowel?0.8:0.3);
+    break;
+  case "organ":
+    var od=vowel?1:0.4;
+    [[1,0.5],[2,0.32],[3,0.18],[4,0.14],[6,0.08]].forEach(function(h){ var hg=c.createGain(); hg.gain.value=h[1]; hg.connect(g); o("sine",f*h[0],od+0.12,hg); });
+    g.gain.setValueAtTime(0.0001,t); g.gain.linearRampToValueAtTime(0.16,t+0.012); g.gain.setValueAtTime(0.16,t+od); g.gain.linearRampToValueAtTime(0.0001,t+od+0.1);
+    break;
+  case "flute":
+    var fd=vowel?1.2:0.55, vib=c.createOscillator(), vg=c.createGain(); vib.frequency.value=5; vg.gain.value=9; vib.connect(vg);
+    var fo=c.createOscillator(); fo.type="sine"; fo.frequency.value=f*2; vg.connect(fo.detune); fo.connect(g); fo.start(t); vib.start(t); fo.stop(t+fd+0.1); vib.stop(t+fd+0.1); W.push("sine");
+    var nb=c.createBufferSource(); nb.buffer=noiseBuf; var bp=c.createBiquadFilter(); bp.type="bandpass"; bp.frequency.value=f*2; bp.Q.value=6; var ng=c.createGain(); ng.gain.value=0.35;
+    nb.connect(bp); bp.connect(ng); ng.connect(g); nb.start(t); nb.stop(t+fd+0.1);
+    env(g,t,0.06,0.2,fd);
+    break;
+  case "strings":
+    var sd=vowel?1.6:0.9, sf=lp(c,1800,0.8,g);
+    [-10,0,10].forEach(function(d){ o("sawtooth",f,sd+0.6,sf,d); });
+    g.gain.setValueAtTime(0.0001,t); g.gain.linearRampToValueAtTime(0.09,t+(vowel?0.4:0.22)); g.gain.setValueAtTime(0.09,t+sd); g.gain.linearRampToValueAtTime(0.0001,t+sd+0.5);
+    break;
+  case "steel":
+    [[1,0.5],[2,0.25],[3.9,0.12]].forEach(function(h){ var hg=c.createGain(); hg.gain.value=h[1]; hg.connect(g);
+      var so=c.createOscillator(); so.type="sine"; so.frequency.setValueAtTime(f*2*h[0]*1.02,t); so.frequency.exponentialRampToValueAtTime(f*2*h[0],t+0.03); so.connect(hg); so.start(t); so.stop(t+(vowel?1.3:0.8)); W.push("sine"); });
+    env(g,t,0.002,0.3,vowel?1.2:0.7);
+    break;
+  case "guitar":
+    var src=c.createBufferSource(); src.buffer=ksBuffer(c,f,vowel?2:1.3); src.connect(g); g.gain.value=vowel?0.32:0.42; src.start(t); W.push("karplus-strong");
+    break;
+  case "choir":
+    var cd=vowel?1.4:0.8, cv2=c.createOscillator(), cvg=c.createGain(); cv2.frequency.value=5.5; cvg.gain.value=14; cv2.connect(cvg);
+    var co2=c.createOscillator(); co2.type="sawtooth"; co2.frequency.value=f; cvg.connect(co2.detune); W.push("sawtooth");
+    [[320,8,1],[800,10,0.45],[2400,12,0.12]].forEach(function(fm){ var b2=c.createBiquadFilter(); b2.type="bandpass"; b2.frequency.value=fm[0]; b2.Q.value=fm[1]; var bg=c.createGain(); bg.gain.value=fm[2]; co2.connect(b2); b2.connect(bg); bg.connect(g); });
+    co2.start(t); cv2.start(t); co2.stop(t+cd+0.3); cv2.stop(t+cd+0.3);
+    g.gain.setValueAtTime(0.0001,t); g.gain.linearRampToValueAtTime(0.5,t+0.15); g.gain.setValueAtTime(0.5,t+cd); g.gain.linearRampToValueAtTime(0.0001,t+cd+0.25);
+    break;
+  case "wobble":
+    var wd=vowel?1.6:0.9, wf=c.createBiquadFilter(); wf.type="lowpass"; wf.Q.value=9; wf.frequency.value=420; wf.connect(g);
+    var wl=c.createOscillator(), wlg=c.createGain(); wl.type="sine"; wl.frequency.value=1/(stepDur()*(vowel?2:1)); wlg.gain.value=360; wl.connect(wlg); wlg.connect(wf.frequency); wl.start(t); wl.stop(t+wd+0.1);
+    o("sawtooth",f/2,wd+0.1,wf); o("square",f/2,wd+0.1,wf,-5);
+    g.gain.setValueAtTime(0.0001,t); g.gain.linearRampToValueAtTime(0.13,t+0.01); g.gain.setValueAtTime(0.13,t+wd-0.08); g.gain.linearRampToValueAtTime(0.0001,t+wd);
     break;
   default: // chiptune
     if(vowel){ var cf=lp(c,2600,0.7,g); o("square",f*2,0.9,cf,-8); o("square",f*2,0.9,cf,8); env(g,t,0.04,0.07,0.75); }
@@ -450,7 +507,7 @@ var DEMOS={
 "boombap": {
 "label": "Hip-hop boom bap",
 "tempo": 90,
-"lead": "keys",
+"lead": "piano",
 "fx": {
 "crush": 30,
 "filter": 75,
@@ -467,7 +524,7 @@ var DEMOS={
 ],
 [
 "mkh     pmk     mkh   j g h     ",
-"keys"
+"piano"
 ],
 [
 "ie      ae      ie      ea      ",
@@ -557,7 +614,7 @@ var DEMOS={
 ],
 [
 "ie      o       ae      eo      ",
-"dreamy"
+"strings"
 ]
 ]
 },
@@ -626,7 +683,7 @@ var DEMOS={
 "lines": [
 [
 "a   e   i     o a   e   u   i   ",
-"dreamy"
+"strings"
 ],
 [
 "  m       p  q    m       k   h ",
