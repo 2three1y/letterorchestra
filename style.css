@@ -24,3 +24,14 @@ a{color:var(--accent)}
 @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
 .export{align-items:center}
 .status{margin:0;color:var(--muted)}
+.skip{position:absolute;left:.5rem;top:-4rem;background:var(--accent);color:var(--accent-fg);padding:.7rem 1rem;border-radius:10px;z-index:10;min-height:44px;display:inline-block}
+.skip:focus{top:.5rem}
+.sound{display:flex;flex-wrap:wrap;align-items:center;gap:.75rem;margin:1rem 0}
+#sound-on{font-size:1.1rem}
+h3{font-size:1.1rem;margin:1.25rem 0 .35rem}
+fieldset.fx{border:2px solid var(--line);border-radius:12px;margin:0 0 1rem;padding:.5rem 1rem 1rem}
+fieldset.fx legend{font-weight:700;padding:0 .35rem}
+.hint{margin:.25rem 0 .6rem;color:var(--muted)}
+.toggle{border-color:var(--accent)}
+.preview .pl{min-height:1.6rem}
+h2[tabindex]:focus{outline:none}

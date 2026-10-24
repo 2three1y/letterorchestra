@@ -8,25 +8,40 @@
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
+<a class="skip" href="#guide-h">Skip to guide</a>
 <main>
   <h1>Letter Orchestra</h1>
   <p class="intro">Type anything. Every letter plays a note. Hit Play it back to hear the whole thing as a song.</p>
 
+  <div class="sound">
+    <button type="button" id="sound-on">Turn sound on</button>
+    <p id="sound-status" class="status">Sound is off. Press Turn sound on.</p>
+  </div>
+
   <section aria-labelledby="play-h">
     <h2 id="play-h">Play</h2>
-    <label for="text">Your text (each letter plays a sound)</label>
-    <textarea id="text" rows="4" autocomplete="off" autocapitalize="off" spellcheck="false"></textarea>
+    <label for="text">Your text (each letter plays a sound, each line is a track)</label>
+    <textarea id="text" rows="5" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"></textarea>
     <div id="preview" class="preview" aria-hidden="true"></div>
 
     <div class="row">
-      <button type="button" id="play">Play it back</button>
-      <button type="button" id="stop">Stop</button>
+      <button type="button" id="play" class="play">Play it back</button>
+      <button type="button" id="stop" class="stop">Stop</button>
       <button type="button" id="loop" aria-pressed="true">Loop</button>
     </div>
 
-    <div class="row export">
-      <button type="button" id="export">Export WAV</button>
-      <p id="export-status" class="status"></p>
+    <div class="field">
+      <label for="instrument">Instrument (for the next letters you type)</label>
+      <select id="instrument">
+        <option value="chiptune">Chiptune</option>
+        <option value="dreamy">Dreamy</option>
+        <option value="bass">Bass</option>
+        <option value="keys">Keys</option>
+        <option value="supersaw">Supersaw</option>
+        <option value="bell">Bell</option>
+        <option value="808">808</option>
+        <option value="reese">Reese bass</option>
+      </select>
     </div>
 
     <div class="field">
@@ -34,13 +49,132 @@
       <input type="range" id="tempo" min="60" max="200" step="5" value="120">
     </div>
 
-    <div class="field">
-      <label for="instrument">Instrument</label>
-      <select id="instrument">
-        <option value="chiptune">Chiptune</option>
-        <option value="dreamy">Dreamy</option>
-        <option value="bass">Bass</option>
-      </select>
+    <div class="row export">
+      <button type="button" id="export">Export WAV</button>
+      <p id="export-status" class="status"></p>
+    </div>
+  </section>
+
+  <section aria-labelledby="guide-h">
+    <h2 id="guide-h" tabindex="-1">Guide</h2>
+    <p>I made this because I saw Orca, a music thing where every letter is an instrument, and I was like ok but what if typing a text message was a whole song. So now it is. Here's how to drive it.</p>
+
+    <h3>Turn the sound on</h3>
+    <p>Press Turn sound on at the top. You'll hear a little three note chime. If you hear nothing, flip the ring switch on the side of your phone off silent and turn the volume up. Phones are shy about web sounds until you tap something, so that button is the tap.</p>
+
+    <h3>What each key does</h3>
+    <ul>
+      <li>Letters play notes from a scale that basically can't sound bad. I tried. I typed my whole name and it slapped.</li>
+      <li>a is the lowest note and z is the highest.</li>
+      <li>Vowels (a, e, i, o, u) play a soft, long version of the instrument, like a pad. Consonants play the short, plucky version.</li>
+      <li>Numbers are drums: 1 kick, 2 snare, 3 closed hat, 4 open hat, 5 high tom, 6 low tom, 7 kick plus snare, 8 kick plus hat, 9 snare plus open hat, 0 kick plus open hat. Spam 1212 for instant beat.</li>
+      <li>Space is a rest, so you get a little pause.</li>
+      <li>! is a crash, ? is a rising boop, and . is a tiny click.</li>
+      <li>Every new line is its own track, and all the lines play at the same time. Put drums on line one, bass on line two, melody on line three. Congrats, you have a band.</li>
+    </ul>
+
+    <h3>Play it back</h3>
+    <ul>
+      <li>Play it back plays every line together, one character per eighth note.</li>
+      <li>Stop, or the Escape key, shuts it up.</li>
+      <li>Loop is on by default. Each line loops on its own, so a short line repeats under a long one. Turn Loop off to play it once.</li>
+      <li>Tempo goes from 60 to 200 BPM. You can edit the text while it plays and it picks up your changes live.</li>
+    </ul>
+
+    <h3>Instruments</h3>
+    <p>Pick an instrument, then type. The letters remember the instrument they were typed with. Switch instruments mid-typing to stack sounds in one track. Chiptune is a video game square wave, Dreamy is soft and floaty, Bass and Reese bass are low and growly, Keys is a mellow electric piano, Supersaw is big and bright, Bell is a shiny bell, and 808 is the booming trap bass. Drums and punctuation always sound the same.</p>
+
+    <h3>Effects</h3>
+    <p>The Effects section has seven effects, a bit like the mixer in FL Studio. Each one has a button to turn it on and a slider for how strong it is. They work on live typing, on playback and on Export WAV. Effects are for the whole song, not single letters. Pro tip: Bitcrusher plus Reverb plus Filter sweep is instant lo-fi.</p>
+
+    <h3>Demos</h3>
+    <p>Each demo button loads a starter song in a genre, with its own tempo, instruments and effects. It replaces your text, so export first if you made a banger. Then press Play it back. Read the lines to see how it's built, then wreck it and make it yours.</p>
+
+    <h3>Export WAV</h3>
+    <p>Export WAV saves one pass of your song as letter-orchestra.wav, with the instruments and effects you picked, so you can drop it straight into a DAW. Yes, your group chat can now be a sample pack.</p>
+
+    <h3>VoiceOver tips</h3>
+    <ul>
+      <li>Nothing talks over VoiceOver while you type. The sound is the feedback.</li>
+      <li>Use whatever typing style you like (standard, touch or direct touch). The sound plays as each character goes in.</li>
+      <li>If VoiceOver's voice makes the notes go quiet, turn Audio Ducking off in the VoiceOver Audio settings.</li>
+      <li>Jump around by headings: Play, Guide, Effects, Demos and Try a phrase are all headings.</li>
+      <li>The sliders go in steps of 5. Swipe up or down on them to change the value.</li>
+      <li>No sound ever plays until you press or type something.</li>
+    </ul>
+  </section>
+
+  <section aria-labelledby="fx-h">
+    <h2 id="fx-h">Effects</h2>
+    <fieldset class="fx">
+      <legend>Reverb</legend>
+      <p class="hint">Space. Makes everything sound like it's in a big room.</p>
+      <button type="button" id="fx-reverb" class="toggle" aria-pressed="false">Reverb<span class="st" aria-hidden="true"> (off)</span></button>
+      <label for="fx-reverb-amt">Reverb mix: <span id="fx-reverb-val"></span></label>
+      <input type="range" id="fx-reverb-amt" min="0" max="100" step="5" value="0">
+    </fieldset>
+    <fieldset class="fx">
+      <legend>Delay</legend>
+      <p class="hint">Echo echo echo. Timed to your tempo.</p>
+      <button type="button" id="fx-delay" class="toggle" aria-pressed="false">Delay<span class="st" aria-hidden="true"> (off)</span></button>
+      <label for="fx-delay-amt">Delay feedback: <span id="fx-delay-val"></span></label>
+      <input type="range" id="fx-delay-amt" min="0" max="100" step="5" value="0">
+    </fieldset>
+    <fieldset class="fx">
+      <legend>Distortion</legend>
+      <p class="hint">Crunch. Turn it up for chaos.</p>
+      <button type="button" id="fx-distortion" class="toggle" aria-pressed="false">Distortion<span class="st" aria-hidden="true"> (off)</span></button>
+      <label for="fx-distortion-amt">Distortion drive: <span id="fx-distortion-val"></span></label>
+      <input type="range" id="fx-distortion-amt" min="0" max="100" step="5" value="0">
+    </fieldset>
+    <fieldset class="fx">
+      <legend>Filter sweep</legend>
+      <p class="hint">Muffles the highs and slowly sweeps, like a DJ knob.</p>
+      <button type="button" id="fx-filter" class="toggle" aria-pressed="false">Filter sweep<span class="st" aria-hidden="true"> (off)</span></button>
+      <label for="fx-filter-amt">Filter sweep cutoff: <span id="fx-filter-val"></span></label>
+      <input type="range" id="fx-filter-amt" min="0" max="100" step="5" value="0">
+    </fieldset>
+    <fieldset class="fx">
+      <legend>Chorus</legend>
+      <p class="hint">Makes one sound feel wide and wobbly, like two players.</p>
+      <button type="button" id="fx-chorus" class="toggle" aria-pressed="false">Chorus<span class="st" aria-hidden="true"> (off)</span></button>
+      <label for="fx-chorus-amt">Chorus depth: <span id="fx-chorus-val"></span></label>
+      <input type="range" id="fx-chorus-amt" min="0" max="100" step="5" value="0">
+    </fieldset>
+    <fieldset class="fx">
+      <legend>Bitcrusher</legend>
+      <p class="hint">Lo-fi. Chews the sound into old video game crumbs.</p>
+      <button type="button" id="fx-crush" class="toggle" aria-pressed="false">Bitcrusher<span class="st" aria-hidden="true"> (off)</span></button>
+      <label for="fx-crush-amt">Bitcrusher amount: <span id="fx-crush-val"></span></label>
+      <input type="range" id="fx-crush-amt" min="0" max="100" step="5" value="0">
+    </fieldset>
+    <fieldset class="fx">
+      <legend>Sidechain pump</legend>
+      <p class="hint">Ducks the volume on every beat. That house music breathing.</p>
+      <button type="button" id="fx-pump" class="toggle" aria-pressed="false">Sidechain pump<span class="st" aria-hidden="true"> (off)</span></button>
+      <label for="fx-pump-amt">Sidechain pump amount: <span id="fx-pump-val"></span></label>
+      <input type="range" id="fx-pump-amt" min="0" max="100" step="5" value="0">
+    </fieldset>
+  </section>
+
+  <section aria-labelledby="demo-h">
+    <h2 id="demo-h">Demos</h2>
+    <p>Pick a genre to load a starter song.</p>
+    <ul class="examples">
+      <li><button type="button" class="demo" data-demo="lofi">Lo-fi</button></li>
+      <li><button type="button" class="demo" data-demo="boombap">Hip-hop boom bap</button></li>
+      <li><button type="button" class="demo" data-demo="trap">Trap</button></li>
+      <li><button type="button" class="demo" data-demo="house">House</button></li>
+      <li><button type="button" class="demo" data-demo="synthwave">Synthwave</button></li>
+      <li><button type="button" class="demo" data-demo="chiptune">Chiptune</button></li>
+      <li><button type="button" class="demo" data-demo="dnb">Drum and bass</button></li>
+      <li><button type="button" class="demo" data-demo="ambient">Ambient</button></li>
+      <li><button type="button" class="demo" data-demo="hyperpop">Hyperpop</button></li>
+    </ul>
+    <p id="demo-status" class="status"></p>
+    <div class="row">
+      <button type="button" class="play">Play it back</button>
+      <button type="button" class="stop">Stop</button>
     </div>
   </section>
 
@@ -53,21 +187,6 @@
       <li><button type="button" class="ex">la la la. la la la?</button></li>
       <li><button type="button" class="ex">bonk 1 bonk 2 bonk 3!</button></li>
     </ul>
-  </section>
-
-  <section aria-labelledby="how-h">
-    <h2 id="how-h">How it works</h2>
-    <p>I made this because I saw Orca, a music thing where every letter is an instrument, and I was like ok but what if typing a text message was a whole song. So now it is. You are welcome.</p>
-    <ul>
-      <li>Letters play notes from a scale that basically can't sound bad. I tried. I typed my whole name and it slapped.</li>
-      <li>Vowels (a, e, i, o, u) get a soft pad sound. Consonants get the plucky sound, and the Instrument menu changes that one.</li>
-      <li>Space is a rest, so you get a little pause.</li>
-      <li>Numbers are drums: 1 is a kick, 2 a snare, 3 hats, and the rest are mixes. Spam 1212 for instant beat.</li>
-      <li>! is a crash, ? is a rising boop, and . is a tiny click.</li>
-      <li>Play it back plays your whole text as a loop. Escape or Stop shuts it up.</li>
-      <li>Export WAV saves one pass of your text as a WAV file at your tempo and instrument, so you can drop it straight into a DAW. Yes, your group chat can now be a sample pack.</li>
-    </ul>
-    <p>Nothing talks over your screen reader while you type. The sound is the feedback. No sound plays until you press or type something.</p>
   </section>
 </main>
 <footer>
