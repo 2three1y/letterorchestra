@@ -265,8 +265,12 @@
               if (lch === ' ') continue;
               var hold = 1;
               while (hold < 3 && ls + hold < 8 && LT[(pos + hold) % LT.length] === ' ') hold++;
-              var mL = letterMidi(lch), lm = mL + 12;
-              if (V.lead === 'supersaw' || V.lead === 'crush') lm -= 12;
+              // fold into the vibe lead's range (two octaves), like the vibe's own melody
+              var mL = letterMidi(lch), lm = mL, lLo = (V.lead === 'supersaw' || V.lead === 'crush') ? base - 2 : base + 7;
+              while (lm < lLo) lm += 12;
+              while (lm > lLo + 24) lm -= 12;
+              var cm = mL + 12;
+              while (cm > base + 26) cm -= 12;
               var isVowel = 'aeiou'.indexOf(lch) >= 0;
               var lt = tb(b, lStep), ld = hold * 2 * step;
               ev.lead.push({ t: lt, dur: ld, midi: lm, midiLO: mL, vel: sec.type === 'intro' ? 0.5 : 0.85, filtered: sec.type === 'intro', letter: lch, vowel: isVowel, kind: LK[pos] });
@@ -275,7 +279,7 @@
                 ev.lead.push({ t: lt, dur: ld, midi: lm + 12, midiLO: mL + 12, vel: 0.35, layer: true, letter: lch, vowel: isVowel, kind: LK[pos] });
               }
               // vowels also sing: a vowel chop shaped like that exact vowel, on the same note
-              if (isVowel && sec.type !== 'intro') ev.chop.push({ t: lt, dur: Math.max(ld, 3 * step), midi: mL + 12, v1: lch, v2: null, glide: 0, vel: 0.6, pan: 0, letter: true });
+              if (isVowel && sec.type !== 'intro') ev.chop.push({ t: lt, dur: Math.max(ld, 3 * step), midi: cm, v1: lch, v2: null, glide: 0, vel: 0.6, pan: 0, letter: true });
             }
           }
         }
