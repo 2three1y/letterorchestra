@@ -1,0 +1,25 @@
+:root { color-scheme: light dark; --bg: #fff; --fg: #111; --accent: #6a1bd1; --soft: #f1ecfa; }
+@media (prefers-color-scheme: dark) { :root { --bg: #0e0b14; --fg: #f3f0f8; --accent: #c49bff; --soft: #1d1729; } }
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--fg); font: 1.05rem/1.5 system-ui, -apple-system, sans-serif; }
+main, footer { max-width: 44rem; margin: 0 auto; padding: 1rem; }
+h1 { font-size: 2.2rem; margin: 0.5rem 0; letter-spacing: 0.02em; }
+h2 { margin-top: 2rem; font-size: 1.35rem; }
+.row { display: flex; flex-wrap: wrap; gap: 0.6rem; margin: 0.8rem 0; }
+button { font: inherit; font-weight: 600; padding: 0.7rem 1.1rem; min-height: 44px; border-radius: 0.6rem; border: 2px solid var(--accent); background: var(--soft); color: var(--fg); cursor: pointer; }
+button:hover { background: var(--accent); color: var(--bg); }
+button:disabled, button[aria-disabled="true"] { opacity: 0.5; cursor: default; }
+button:focus-visible, select:focus-visible, input:focus-visible, a:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+#build { background: var(--accent); color: var(--bg); }
+.field { margin: 1rem 0; display: flex; flex-direction: column; gap: 0.3rem; }
+select, input[type="text"] { font: inherit; padding: 0.55rem; min-height: 44px; border-radius: 0.4rem; border: 1px solid currentColor; background: var(--bg); color: var(--fg); max-width: 100%; }
+input[type="range"] { width: 100%; min-height: 44px; accent-color: var(--accent); }
+fieldset { border: 1px solid currentColor; border-radius: 0.5rem; margin: 1rem 0; padding: 0.5rem 1rem; }
+.check { display: flex; align-items: center; gap: 0.6rem; min-height: 44px; }
+.check input { width: 1.4rem; height: 1.4rem; accent-color: var(--accent); }
+.note { margin: 0; opacity: 0.85; }
+.status { font-weight: 600; padding: 0.6rem 0.8rem; border-left: 4px solid var(--accent); background: var(--soft); }
+#map li { margin: 0.4rem 0; }
+footer { border-top: 1px solid currentColor; margin-top: 2rem; }
+a { color: var(--accent); }
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }

@@ -35,6 +35,12 @@ Seven effects, kind of like the FL Studio mixer, each with an on button and a sl
 
 Starter songs to learn from and remix: Lo-fi, Hip-hop boom bap, Trap, House, Synthwave, Chiptune, Drum and bass, Ambient and Hyperpop. Each one sets the tempo, instruments and effects. Load one, press Play it back, then wreck it.
 
+## TabLab
+
+TabLab is the beat maker Tab and I are building together: https://2three1y.github.io/letterorchestra/tablab/
+
+Pick a vibe (Rage, Digicore, Hyperpop SUPXR style, Trap half-time or Glitchcore), a tempo, a key and a length, then press Build beat. It makes a whole track in the browser: intro, drop, bridge, drop 2 and a big ending, with sliding 808s, hat rolls, supersaws, plucks and vowel chops that are synths, not voices. Extras: bomb timer, pitch dives, tape stop and vinyl crackle. Every build has a seed, so Build again makes a new version and typing an old seed gets one back. There's a track map with times so I know what's where, and Download WAV saves it for FL Studio. The sounds come from the Python beats Tab and I made first, Sub Wall Protocol and DETONATOR.
+
 ## Accessibility
 
 I use VoiceOver, so I built this to work with it. Real buttons, a real text box, real sliders and a real menu, all labelled. Nothing gets announced while you type, because the sound is the feedback. Studio changes get one short message in a single status spot, nothing more. No sound plays until you press or type something. There's a Guide on the page and a Skip to guide link at the top. Light and dark mode follow your device, and Reduce Motion is respected.
