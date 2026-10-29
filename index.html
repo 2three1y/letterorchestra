@@ -12,7 +12,7 @@
 <main>
   <h1>Letter Orchestra</h1>
   <p class="intro">Type anything. Every letter plays a note. Hit Play it back to hear the whole thing as a song.</p>
-  <p><a href="tablab/">TabLab: build a whole beat with Tab</a></p>
+  <p><a href="#tablab">TabLab: build a whole beat with Tab</a></p>
 
   <div class="sound">
     <button type="button" id="sound-on">Turn sound on</button>
@@ -156,6 +156,80 @@
     <ul id="mix-tracks" class="mix-tracks"></ul>
   </section>
 
+  <section aria-labelledby="tablab">
+    <h2 id="tablab" tabindex="-1">TabLab beat maker</h2>
+    <p>Tab and I make beats together here. Pick a vibe, a tempo, a key and how long it goes, then press Build beat. The whole track gets made right in your browser: 808s, drums, synths, vowel chops, risers. No samples, no voices. Turn on Melody from my letters and the letters in Your text become the melody over the beat.</p>
+
+    <h3 id="tl-presets-h">Presets</h3>
+    <p>Starting points based on our first beats. They set the beat settings below.</p>
+    <div class="row">
+      <button type="button" id="tl-preset-subwall">Sub Wall</button>
+      <button type="button" id="tl-preset-detonator">Detonator</button>
+    </div>
+
+    <h3 id="tl-settings-h">Beat settings</h3>
+    <label for="tl-vibe">Vibe</label>
+    <select id="tl-vibe">
+      <option value="rage">Rage</option>
+      <option value="digicore">Digicore</option>
+      <option value="hyperpop" selected>Hyperpop, SUPXR style</option>
+      <option value="trap">Trap half-time</option>
+      <option value="glitch">Glitchcore</option>
+    </select>
+    <p id="tl-vibe-text" class="hint"></p>
+    <label for="tl-bpm">Beat tempo: <span id="tl-bpm-val">155</span> BPM</label>
+    <input type="range" id="tl-bpm" min="120" max="170" step="1" value="155">
+    <label for="tl-key">Key</label>
+    <select id="tl-key"></select>
+    <label for="tl-length">Length</label>
+    <select id="tl-length">
+      <option value="short">Short: intro, drop, bridge, drop 2, big ending (28 bars)</option>
+      <option value="medium" selected>Medium: intro, drop, bridge, drop 2, big ending (52 bars)</option>
+      <option value="long">Long: intro, drop, bridge, drop 2, breakdown, drop 3, big ending (76 bars)</option>
+    </select>
+    <fieldset class="fx">
+      <legend>Extras</legend>
+      <div class="check"><input type="checkbox" id="tl-opt-bomb" checked><label for="tl-opt-bomb">Bomb timer</label></div>
+      <div class="check"><input type="checkbox" id="tl-opt-dives" checked><label for="tl-opt-dives">Pitch dives</label></div>
+      <div class="check"><input type="checkbox" id="tl-opt-tape" checked><label for="tl-opt-tape">Tape stop</label></div>
+      <div class="check"><input type="checkbox" id="tl-opt-vinyl"><label for="tl-opt-vinyl">Vinyl crackle</label></div>
+    </fieldset>
+    <label for="tl-seed">Seed</label>
+    <input type="text" id="tl-seed" inputmode="numeric" autocomplete="off" spellcheck="false">
+
+    <h3 id="tl-letters-h">My letters in the beat</h3>
+    <div class="check"><input type="checkbox" id="tl-letters"><label for="tl-letters">Melody from my letters</label></div>
+    <p class="hint">Uses everything in Your text. Each letter is one eighth note at the beat tempo, a space is a rest, and the notes are moved into the beat's key. Vowels also sing as vowel chops.</p>
+    <label for="tl-lead">Lead sound</label>
+    <select id="tl-lead"></select>
+
+    <h3 id="tl-beat-h">Build and play</h3>
+    <div class="row">
+      <button type="button" id="tl-build">Build beat</button>
+      <button type="button" id="tl-again">Build again</button>
+    </div>
+    <div class="row">
+      <button type="button" id="tl-play" disabled>Play beat</button>
+      <button type="button" id="tl-stop" disabled>Stop beat</button>
+      <button type="button" id="tl-download" disabled>Download beat WAV</button>
+    </div>
+    <p id="tl-status" class="status">Nothing built yet</p>
+
+    <h3 id="tl-map-h">Track map</h3>
+    <p id="tl-map-summary">Build a beat and the sections show up here with their times.</p>
+    <ol id="tl-map"></ol>
+
+    <h3 id="tl-how-h">How TabLab works</h3>
+    <button type="button" id="tl-how-toggle" class="minor" aria-expanded="false" aria-controls="tl-how-body">Show how TabLab works</button>
+    <div id="tl-how-body" hidden>
+      <p>Build beat uses the seed in the Seed box, so the same settings and the same seed always make the same beat. Build again picks a new seed and makes a new version. Change the seed yourself to get an old one back.</p>
+      <p>Every track goes intro, drop, bridge, drop 2, big ending. The intro and bridge are muffled, the drops open up, and there is one beat of silence right before each drop.</p>
+      <p>Melody from my letters reads Your text from the start again at every section. Letters go up a scale from a to z, like they do when you type them here, but in the beat's minor key. Lead sound picks what plays the melody: the vibe's own synth, any Letter Orchestra instrument, or each letter's own instrument from when you typed it.</p>
+      <p>Bomb timer adds beeps and ticking that speed up into the drops and the ending. Pitch dives make the 808 and the vowel chops slide way down at the end of sections. Tape stop slows the whole beat to a stop at the end of the first drop and at the very end. Vinyl crackle adds record noise and makes the intro more lo-fi.</p>
+      <p>The vowel chops are synths shaped like vowels, not real voices. Download beat WAV saves a 16 bit, 44.1 kHz stereo file you can drop into FL Studio. Escape stops playback.</p>
+    </div>
+  </section>
+
   <section aria-labelledby="guide-h">
     <h2 id="guide-h" tabindex="-1">Guide</h2>
     <p>I made this because I saw Orca, a music thing where every letter is an instrument, and I was like ok but what if typing a text message was a whole song. So now it is. Here's how to drive it.</p>
@@ -219,6 +293,8 @@
     <h3>Mixer</h3>
     <p>Every track, plus Letters (your typed lines), gets a volume slider, a Mute button and a Solo button. Solo one or more and only those play. Master volume turns the whole thing up or down, and it all goes into the audio file too.</p>
 
+    <h3>TabLab beat maker</h3>
+    <p>TabLab builds a whole beat for you. Pick a vibe or a preset, then press Build beat, then Play beat. Turn on Melody from my letters to hear what you typed as the melody over the beat, and pick a Lead sound to play it with any instrument from here.</p>
     <h3>VoiceOver tips</h3>
     <ul>
       <li>Nothing talks over VoiceOver while you type. The sound is the feedback.</li>
@@ -321,5 +397,7 @@
 </footer>
 <script src="app.js"></script>
 <script src="studio.js"></script>
+<script src="tablab/engine.js"></script>
+<script src="tablab/tablab.js"></script>
 </body>
 </html>

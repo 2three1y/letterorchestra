@@ -3,104 +3,15 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="color-scheme" content="light dark">
-<title>TabLab</title>
-<link rel="stylesheet" href="tablab.css">
+<meta http-equiv="refresh" content="0; url=../#tablab">
+<link rel="canonical" href="https://2three1y.github.io/letterorchestra/#tablab">
+<title>TabLab is now in Letter Orchestra</title>
 </head>
 <body>
 <main>
-  <h1>TabLab</h1>
-  <p>Tab and I make beats together here. Pick a vibe, a tempo, a key and how long it goes, then press Build beat. The whole track gets made right in your browser: 808s, drums, synths, vowel chops, risers. No samples, no voices. Every build is a little different, and the seed number lets you get one back.</p>
-  <p>If you hear nothing on an iPhone, flip the silent switch off and turn the volume up.</p>
-
-  <section aria-labelledby="presets-h">
-    <h2 id="presets-h">Presets</h2>
-    <p>Starting points based on our first beats. They set everything below.</p>
-    <div class="row">
-      <button type="button" id="preset-subwall">Sub Wall</button>
-      <button type="button" id="preset-detonator">Detonator</button>
-    </div>
-  </section>
-
-  <section aria-labelledby="settings-h">
-    <h2 id="settings-h">Settings</h2>
-    <div class="field">
-      <label for="vibe">Vibe</label>
-      <select id="vibe">
-        <option value="rage">Rage</option>
-        <option value="digicore">Digicore</option>
-        <option value="hyperpop" selected>Hyperpop, SUPXR style</option>
-        <option value="trap">Trap half-time</option>
-        <option value="glitch">Glitchcore</option>
-      </select>
-    </div>
-    <p id="vibe-text" class="note"></p>
-    <div class="field">
-      <label for="bpm">Tempo: <span id="bpm-val">155</span> BPM</label>
-      <input type="range" id="bpm" min="120" max="170" step="1" value="155">
-    </div>
-    <div class="field">
-      <label for="key">Key</label>
-      <select id="key"></select>
-    </div>
-    <div class="field">
-      <label for="length">Length</label>
-      <select id="length">
-        <option value="short">Short: intro, drop, bridge, drop 2, big ending (28 bars)</option>
-        <option value="medium" selected>Medium: intro, drop, bridge, drop 2, big ending (52 bars)</option>
-        <option value="long">Long: intro, drop, bridge, drop 2, breakdown, drop 3, big ending (76 bars)</option>
-      </select>
-    </div>
-    <fieldset>
-      <legend>Extras</legend>
-      <div class="check"><input type="checkbox" id="opt-bomb" checked><label for="opt-bomb">Bomb timer</label></div>
-      <div class="check"><input type="checkbox" id="opt-dives" checked><label for="opt-dives">Pitch dives</label></div>
-      <div class="check"><input type="checkbox" id="opt-tape" checked><label for="opt-tape">Tape stop</label></div>
-      <div class="check"><input type="checkbox" id="opt-vinyl"><label for="opt-vinyl">Vinyl crackle</label></div>
-    </fieldset>
-    <div class="field">
-      <label for="seed">Seed</label>
-      <input type="text" id="seed" inputmode="numeric" autocomplete="off" spellcheck="false">
-    </div>
-  </section>
-
-  <section aria-labelledby="beat-h">
-    <h2 id="beat-h">Beat</h2>
-    <div class="row">
-      <button type="button" id="build">Build beat</button>
-      <button type="button" id="again">Build again</button>
-    </div>
-    <div class="row">
-      <button type="button" id="play" disabled>Play</button>
-      <button type="button" id="stop" disabled>Stop</button>
-      <button type="button" id="download" disabled>Download WAV</button>
-    </div>
-    <p id="status" class="status" role="status" aria-live="polite">Nothing built yet</p>
-  </section>
-
-  <section aria-labelledby="map-h">
-    <h2 id="map-h">Track map</h2>
-    <p id="map-summary">Build a beat and the sections show up here with their times.</p>
-    <ol id="map"></ol>
-  </section>
-
-  <section aria-labelledby="how-h">
-    <h2 id="how-h">How it works</h2>
-    <button type="button" id="how-toggle" aria-expanded="false" aria-controls="how-body">Show how it works</button>
-    <div id="how-body" hidden>
-      <p>Build beat uses the seed in the Seed box, so the same settings and the same seed always make the same beat. Build again picks a new seed and makes a new version. Change the seed yourself to get an old one back.</p>
-      <p>Every track goes intro, drop, bridge, drop 2, big ending. The intro and bridge are muffled, the drops open up, and there is one beat of silence right before each drop.</p>
-      <p>Bomb timer adds beeps and ticking that speed up into the drops and the ending. Pitch dives make the 808 and the vowel chops slide way down at the end of sections. Tape stop slows the whole beat to a stop at the end of the first drop and at the very end. Vinyl crackle adds record noise and makes the intro more lo-fi.</p>
-      <p>The vowel chops are synths shaped like vowels, not real voices. Download WAV saves a 16 bit, 44.1 kHz stereo file you can drop into FL Studio.</p>
-      <p>Keyboard: Escape stops playback.</p>
-    </div>
-  </section>
+  <h1>TabLab is now part of Letter Orchestra</h1>
+  <p><a href="../#tablab">Go to TabLab in Letter Orchestra</a></p>
 </main>
-<footer>
-  <p><a href="../">Back to Letter Orchestra</a></p>
-  <p>Co-written with Tab</p>
-</footer>
-<script src="engine.js"></script>
-<script src="tablab.js"></script>
+<script>location.replace('../#tablab');</script>
 </body>
 </html>

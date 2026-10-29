@@ -191,6 +191,26 @@
 
     var VOWS = ['a', 'e', 'i', 'o', 'u'];
 
+    // ---- Letter Orchestra fusion: the typed letters can take over the lead melody.
+    // Same letter to note idea as Letter Orchestra (a to z climb a pentatonic scale over about
+    // three octaves), but in this beat's minor key. One letter per eighth note, a space is a rest.
+    var LT = [], LK = [], MPENT = [0, 3, 5, 7, 10];
+    if (opts.letters) {
+      var rawL = String(opts.letters).slice(0, 4000).toLowerCase();
+      for (var li = 0; li < rawL.length; li++) {
+        var lc = rawL.charAt(li);
+        LT.push(lc >= 'a' && lc <= 'z' ? lc : ' ');
+        LK.push(opts.letterInsts && opts.letterInsts[li] ? opts.letterInsts[li] : null);
+      }
+      while (LT.length && LT[LT.length - 1] === ' ') { LT.pop(); LK.pop(); }
+    }
+    var useLetters = LT.some(function (x) { return x !== ' '; });
+    var letterCount = 0;
+    function letterMidi(ch) {
+      var st = Math.round((ch.charCodeAt(0) - 97) * 14 / 25);
+      return base - 12 + 12 * Math.floor(st / 5) + MPENT[st % 5];
+    }
+
     sections.forEach(function (sec, si) {
       var next = sections[si + 1];
       var isDrop = sec.type.indexOf('drop') === 0;
@@ -220,19 +240,44 @@
         if (leadOn) {
           var mbar = lb % 2;
           var vary = (lb % 4 === 3) && rnd() < 0.6;
+          // with letters on, the motif is still worked out (so the rest of the beat stays the same) but not played
+          var leadOut = useLetters ? [] : ev.lead;
           motif.forEach(function (n) {
             if (n.bar !== mbar) return;
             if (gapBar && n.step >= 12) return;
             var d = n.deg;
             if (vary && n.step >= 8) d += pick([-2, -1, 1, 2, 3]);
             if (n.strong) d = snapDeg(d, pcs);
-            var m = degMidi(d);
+            var m = degMidi(d), mLO = m - 12;
             if (V.lead === 'supersaw' || V.lead === 'crush') m -= 12;
-            ev.lead.push({ t: tb(b, n.step), dur: n.len * step, midi: m, vel: sec.type === 'intro' ? 0.5 : 0.85, filtered: sec.type === 'intro' });
+            leadOut.push({ t: tb(b, n.step), dur: n.len * step, midi: m, midiLO: mLO, vel: sec.type === 'intro' ? 0.5 : 0.85, filtered: sec.type === 'intro' });
             if (sec.type === 'drop2' || sec.type === 'drop3' || sec.type === 'ending') {
-              if (V.lead !== 'rage' && V.lead !== 'crush') ev.lead.push({ t: tb(b, n.step), dur: n.len * step, midi: m + 12, vel: 0.35, layer: true });
+              if (V.lead !== 'rage' && V.lead !== 'crush') leadOut.push({ t: tb(b, n.step), dur: n.len * step, midi: m + 12, midiLO: mLO + 12, vel: 0.35, layer: true });
             }
           });
+          if (useLetters) {
+            if (sec.lc === undefined) sec.lc = 0;
+            for (var ls = 0; ls < 8; ls++) {
+              var lStep = ls * 2;
+              if (gapBar && lStep >= 12) break;
+              var pos = sec.lc % LT.length, lch = LT[pos];
+              sec.lc++;
+              if (lch === ' ') continue;
+              var hold = 1;
+              while (hold < 3 && ls + hold < 8 && LT[(pos + hold) % LT.length] === ' ') hold++;
+              var mL = letterMidi(lch), lm = mL + 12;
+              if (V.lead === 'supersaw' || V.lead === 'crush') lm -= 12;
+              var isVowel = 'aeiou'.indexOf(lch) >= 0;
+              var lt = tb(b, lStep), ld = hold * 2 * step;
+              ev.lead.push({ t: lt, dur: ld, midi: lm, midiLO: mL, vel: sec.type === 'intro' ? 0.5 : 0.85, filtered: sec.type === 'intro', letter: lch, vowel: isVowel, kind: LK[pos] });
+              letterCount++;
+              if ((sec.type === 'drop2' || sec.type === 'drop3' || sec.type === 'ending') && V.lead !== 'rage' && V.lead !== 'crush') {
+                ev.lead.push({ t: lt, dur: ld, midi: lm + 12, midiLO: mL + 12, vel: 0.35, layer: true, letter: lch, vowel: isVowel, kind: LK[pos] });
+              }
+              // vowels also sing: a vowel chop shaped like that exact vowel, on the same note
+              if (isVowel && sec.type !== 'intro') ev.chop.push({ t: lt, dur: Math.max(ld, 3 * step), midi: mL + 12, v1: lch, v2: null, glide: 0, vel: 0.6, pan: 0, letter: true });
+            }
+          }
         }
 
         // ---- 808
@@ -408,7 +453,8 @@
     return {
       opts: opts, vibe: V, bpm: bpm, bar: bar, step: step, prog: progName, sections: sections, ev: ev,
       moments: moments.sort(function (a, b) { return a.t - b.t; }), gaps: gaps, tapeStops: tapeStops, stutters: stutters,
-      duration: endT + tail, endT: endT, rnd: rnd
+      duration: endT + tail, endT: endT, rnd: rnd,
+      letters: useLetters, letterCount: letterCount
     };
   }
 
@@ -610,8 +656,25 @@
     var leadIn = leadBus;
     if (leadPost) { leadIn = gainN(1); leadIn.connect(leadPost); leadPost.connect(leadBus); }
     var ssL = panner(-0.6), ssR = panner(0.6); ssL.connect(leadIn); ssR.connect(leadIn);
+    // Letter Orchestra instruments as the lead: the exact same voices the letters play on the main page
+    var LOC = window.LetterOrchestraCore, loBus = null;
+    var loPick = opts.loLead && LOC && LOC.voice ? opts.loLead : '';
+    if (loPick) { loBus = gainN(1); loBus.connect(leadLP); if (V.lead !== 'pluck' && V.lead !== 'fmbell' && V.lead !== 'supersaw' && V.lead !== 'crush') leadLP.connect(dIn); }
+    // level match each instrument to the vibe leads (measured in the drop, lead alone)
+    var LOGAIN = {'808': 0.36, 'chiptune': 3.41, 'dreamy': 0.81, 'bass': 1.69, 'piano': 0.42, 'pluck': 2.53, 'supersaw': 2.15, 'bell': 0.94, 'organ': 0.72, 'flute': 1.27, 'strings': 0.57, 'steel': 1.54, 'guitar': 1.05, 'choir': 0.71, 'wobble': 0.24, 'keys': 0.75, 'reese': 0.75};
+    function loKind(n) {
+      if (loPick === 'mine') return n.kind && LOC.INSTRUMENTS[n.kind] ? n.kind : (opts.loCurrent && LOC.INSTRUMENTS[opts.loCurrent] ? opts.loCurrent : 'chiptune');
+      return LOC.INSTRUMENTS[loPick] ? loPick : '';
+    }
     ev.lead.forEach(function (n) { at(n.t, function () {
       var t = n.t, f = mf(n.midi), vel = n.vel;
+      var kind = loPick ? loKind(n) : '';
+      if (kind) {
+        var lg = gainN(vel * (LOGAIN[kind] || 1));
+        if (n.filtered) { var lf = filt('lowpass', 1400); lg.connect(lf); lf.connect(loBus); } else lg.connect(loBus);
+        LOC.voice(ctx, lg, kind, mf(n.midiLO !== undefined ? n.midiLO : n.midi - 12), t, !!n.vowel);
+        return;
+      }
       var g = gainN(0);
       var dest = leadIn;
       if (n.filtered) { var nf = filt('lowpass', 1200); g.connect(nf); nf.connect(dest); } else g.connect(dest);
@@ -674,7 +737,7 @@
         if (c.glide) bpf.frequency.exponentialRampToValueAtTime(fm[0] * shift * Math.pow(2, c.glide / 12 * 0.8), t + c.dur);
         var fg = gainN(fm[2] * 4); src.connect(bpf); bpf.connect(fg); fg.connect(g);
       });
-      var p = panner((rnd() - 0.5) * 0.6); g.connect(p); p.connect(chopBus);
+      var p = panner(c.pan !== undefined ? c.pan : (rnd() - 0.5) * 0.6); g.connect(p); p.connect(chopBus);
       src.start(t); vib.start(t); src.stop(end + 0.01); vib.stop(end + 0.01);
     }); });
 
@@ -858,7 +921,11 @@
     ending: function (song) { return 'full energy with long 808 notes' + (song.opts.bomb ? ', the clock ticks and the beeps speed up' : '') + ', then one last boom' + (song.opts.tape ? ' and a tape stop' : ' and the tail rings out'); }
   };
   function leadName(song) {
-    return { rage: 'distorted rage synth', pluck: 'pluck melody', supersaw: 'supersaw lead', fmbell: 'bell melody', crush: 'bitcrushed lead' }[song.vibe.lead];
+    var o = song.opts, LOC = window.LetterOrchestraCore, name;
+    if (o.loLead === 'mine') name = 'lead in your own Letter Orchestra instruments';
+    else if (o.loLead && LOC && LOC.INSTRUMENTS && LOC.INSTRUMENTS[o.loLead]) name = LOC.INSTRUMENTS[o.loLead] + ' lead';
+    else name = { rage: 'distorted rage synth', pluck: 'pluck melody', supersaw: 'supersaw lead', fmbell: 'bell melody', crush: 'bitcrushed lead' }[song.vibe.lead];
+    return song.letters ? name + ' playing your letters' : name;
   }
   function trackMap(song) {
     var items = song.sections.map(function (sec) {
