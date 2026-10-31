@@ -4,20 +4,161 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="color-scheme" content="light dark">
-<title>Letter Orchestra</title>
+<title>Letter Orchestra: beat studio</title>
+<meta name="description" content="Letter Orchestra by Chaotic Carter: a beat studio that works with VoiceOver. Drums, hat rolls, sliding 808s, transition FX and WAV export, plus type-a-song letters and TabLab.">
+<meta name="theme-color" content="#0d0b12">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://2three1y.github.io/letterorchestra/">
+<meta property="og:site_name" content="Letter Orchestra">
+<meta property="og:title" content="Letter Orchestra: the center of all musical chaos">
+<meta property="og:description" content="A beat studio you can use with VoiceOver: drums, hat rolls, sliding 808s, transition FX, WAV export. Plus every letter you type plays a note.">
+<meta name="twitter:card" content="summary">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22%3E%3Ctext y=%22.9em%22 font-size=%2290%22%3E%F0%9F%8E%B9%3C/text%3E%3C/svg%3E">
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<a class="skip" href="#guide-h">Skip to guide</a>
+<a class="skip" href="#studio-h">Skip to beat studio</a>
 <main>
   <h1>Letter Orchestra</h1>
-  <p class="intro">Type anything. Every letter plays a note. Hit Play it back to hear the whole thing as a song.</p>
-  <p><a href="#tablab">TabLab: build a whole beat with Tab</a></p>
+  <p class="intro">The center of all musical chaos. Make a beat in the studio, or type anything and every letter plays a note.</p>
+  <nav aria-label="Modes" class="modes">
+    <ul>
+      <li><a href="#studio-h">Beat studio</a></li>
+      <li><a href="#play-h">Letters</a></li>
+      <li><a href="#seq-h">Classic sequencer</a></li>
+      <li><a href="#tablab">TabLab</a></li>
+      <li><a href="#guide-h">Guide</a></li>
+    </ul>
+  </nav>
 
   <div class="sound">
     <button type="button" id="sound-on">Turn sound on</button>
     <p id="sound-status" class="status">Sound is off. Press Turn sound on.</p>
   </div>
+  <p id="studio-status" class="status live" role="status"></p>
+
+  <section id="studio" class="studio" aria-labelledby="studio-h">
+    <h2 id="studio-h" tabindex="-1">Beat studio</h2>
+    <p class="bs-tag">The center of all musical chaos. Drums, hat rolls, sliding 808s and a lead, two patterns for drop 1 and drop 2, and transitions that go crazy.</p>
+
+    <div class="bs-transport" role="group" aria-label="Transport">
+      <button type="button" id="bs-play" class="bs-big">Play</button>
+      <button type="button" id="bs-pat-A" class="bs-pat" aria-pressed="true" aria-label="Pattern A, drop 1">A<span class="bs-sub">drop 1</span></button>
+      <button type="button" id="bs-pat-B" class="bs-pat" aria-pressed="false" aria-label="Pattern B, drop 2">B<span class="bs-sub">drop 2</span></button>
+      <button type="button" id="bs-loop" class="bs-mini" aria-pressed="true">Loop</button>
+    </div>
+
+    <h3 id="bs-presets-h">Presets</h3>
+    <div class="bs-chips">
+      <button type="button" data-preset="dark">Dark 145, C&#9839; minor</button>
+      <button type="button" data-preset="digicore">Digicore 160, D major</button>
+      <button type="button" data-preset="jerk">Jerk 150, F&#9839; minor</button>
+      <button type="button" id="bs-chaos">Chaos melody</button>
+    </div>
+
+    <h3 id="bs-grid-h">Pattern A grid (drop 1)</h3>
+    <p class="bs-hint">Each step is a button. Arrow keys move around, Enter flips a step, Space plays and stops. On a hi-hat step, R changes the roll. On an 808 or lead step, plus and minus change the note and S (808) turns the slide on or off.</p>
+    <div id="bs-grid" class="bs-grid"></div>
+    <div id="bs-hatbrush-wrap" class="bs-inline">
+      <label for="bs-hatbrush">New hat steps</label>
+      <select id="bs-hatbrush"><option value="1">Single hit (1/16)</option><option value="2">Roll in 32nds</option><option value="3">Triplet roll</option></select>
+    </div>
+    <div id="bs-lead-wrap" class="bs-inline">
+      <label for="bs-lead">Lead sound</label>
+      <select id="bs-lead"><option value="saw">Saw</option><option value="square">Square</option><option value="pluck">Pluck</option></select>
+    </div>
+    <div class="bs-chips">
+      <button type="button" id="bs-copy" class="bs-ghost">Copy to other pattern</button>
+      <button type="button" id="bs-clear" class="bs-ghost">Clear this pattern</button>
+    </div>
+
+    <h3 id="bs-ed-h">Note editor</h3>
+    <div class="bs-card">
+      <div class="bs-two">
+        <div><label for="bs-ed-track">Track</label>
+          <select id="bs-ed-track"><option value="b808">808</option><option value="lead">Lead</option></select></div>
+        <div><label for="bs-ed-step">Step</label><select id="bs-ed-step"></select></div>
+      </div>
+      <p id="bs-ed-desc" class="bs-desc"></p>
+      <div class="bs-chips">
+        <button type="button" id="bs-ed-down">Note down</button>
+        <button type="button" id="bs-ed-up">Note up</button>
+        <button type="button" id="bs-ed-octdown">Octave down</button>
+        <button type="button" id="bs-ed-octup">Octave up</button>
+        <button type="button" id="bs-ed-slide" aria-pressed="false">Slide</button>
+        <button type="button" id="bs-ed-shorter">Shorter</button>
+        <button type="button" id="bs-ed-longer">Longer</button>
+        <button type="button" id="bs-ed-hear">Hear</button>
+        <button type="button" id="bs-ed-add">Add note</button>
+        <button type="button" id="bs-ed-del" class="bs-ghost">Remove note</button>
+      </div>
+      <p class="bs-hint">Notes are locked to the key, so they always fit. Slide makes the 808 glide into its note instead of hitting again.</p>
+    </div>
+
+    <h3 id="bs-groove-h">Tempo, key and switch</h3>
+    <div class="bs-card bs-settings">
+      <div><label for="bs-bpm">Tempo: <span id="bs-bpm-val">145</span> BPM</label>
+        <input type="range" id="bs-bpm" min="60" max="200" step="1" value="145"></div>
+      <div><label for="bs-swing">Swing: <span id="bs-swing-val">0</span>%</label>
+        <input type="range" id="bs-swing" min="0" max="60" step="1" value="0"></div>
+      <div><label for="bs-root">Key</label>
+        <select id="bs-root"><option value="0">C</option><option value="1">C&#9839;</option><option value="2">D</option><option value="3">D&#9839;</option><option value="4">E</option><option value="5">F</option><option value="6">F&#9839;</option><option value="7">G</option><option value="8">G&#9839;</option><option value="9">A</option><option value="10">A&#9839;</option><option value="11">B</option></select></div>
+      <div><label for="bs-scale">Scale</label>
+        <select id="bs-scale"><option value="minor">Minor</option><option value="major">Major</option></select></div>
+      <div><label for="bs-chain">Auto switch A and B</label>
+        <select id="bs-chain"><option value="0">Off</option><option value="4">Every 4 bars</option><option value="8">Every 8 bars</option></select></div>
+      <div><label for="bs-switchfx">Switch FX (plays on the bar before the switch)</label>
+        <select id="bs-switchfx"><option value="none">None, hard cut</option><option value="tape">Tape stop</option><option value="stutter">Stutter</option><option value="filter">Filter sweep</option><option value="reverse">Reverse</option><option value="riser">Riser</option></select></div>
+    </div>
+
+    <h3 id="bs-fx-h">Transition FX</h3>
+    <p class="bs-hint">While it plays, an FX button hits on the next bar. While it's stopped, you get a one bar preview.</p>
+    <div class="bs-chips bs-fx">
+      <button type="button" data-fx="tape">Tape stop</button>
+      <button type="button" data-fx="stutter">Stutter</button>
+      <button type="button" data-fx="filter">Filter sweep</button>
+      <button type="button" data-fx="reverse">Reverse</button>
+      <button type="button" data-fx="riser">Riser</button>
+    </div>
+
+    <details class="bs-card bs-mix">
+      <summary>Mixer</summary>
+      <div class="bs-settings">
+        <div><label for="bs-vol-kick">Kick: <span id="bs-vol-kick-val">100</span>%</label><input type="range" id="bs-vol-kick" min="0" max="100" step="5" value="100"></div>
+        <div><label for="bs-vol-clap">Clap: <span id="bs-vol-clap-val">100</span>%</label><input type="range" id="bs-vol-clap" min="0" max="100" step="5" value="100"></div>
+        <div><label for="bs-vol-hat">Hi-hat: <span id="bs-vol-hat-val">100</span>%</label><input type="range" id="bs-vol-hat" min="0" max="100" step="5" value="100"></div>
+        <div><label for="bs-vol-b808">808: <span id="bs-vol-b808-val">100</span>%</label><input type="range" id="bs-vol-b808" min="0" max="100" step="5" value="100"></div>
+        <div><label for="bs-vol-lead">Lead: <span id="bs-vol-lead-val">100</span>%</label><input type="range" id="bs-vol-lead" min="0" max="100" step="5" value="100"></div>
+      </div>
+    </details>
+
+    <h3 id="bs-readout-h">Pattern readout</h3>
+    <p class="bs-hint">The whole pattern in words. Read pattern jumps here so VoiceOver reads it.</p>
+    <button type="button" id="bs-read" class="bs-ghost">Read pattern</button>
+    <div id="bs-readout" class="bs-readout" tabindex="-1" aria-labelledby="bs-readout-h"></div>
+
+    <h3 id="bs-project-h">Project</h3>
+    <div class="bs-card">
+      <label for="bs-name">Beat name</label>
+      <input type="text" id="bs-name" autocomplete="off" spellcheck="false" maxlength="80">
+      <div class="bs-chips">
+        <button type="button" id="bs-save">Save in this browser</button>
+        <button type="button" id="bs-download" class="bs-ghost">Download project file</button>
+        <button type="button" id="bs-open" class="bs-ghost">Open project file</button>
+      </div>
+      <input type="file" id="bs-file" class="visually-hidden" accept=".json,application/json" tabindex="-1" aria-hidden="true">
+      <label for="bs-lib">Saved beats</label>
+      <select id="bs-lib"></select>
+      <div class="bs-chips">
+        <button type="button" id="bs-lib-load">Load</button>
+        <button type="button" id="bs-lib-del" class="bs-ghost">Delete</button>
+      </div>
+      <label for="bs-export-mode">What goes in the WAV</label>
+      <select id="bs-export-mode"><option value="ab4">Drop 1 to drop 2: A 4 bars, switch, B 4 bars</option><option value="ab8">Long: A 8 bars, switch, B 8 bars</option><option value="cur4">This pattern, 4 bars</option></select>
+      <div class="bs-chips"><button type="button" id="bs-export" class="bs-big">Export WAV</button></div>
+      <p class="bs-hint">16-bit, 44.1 kHz stereo, made right in your browser. It ends on a dead stop, no fade.</p>
+    </div>
+  </section>
 
   <section aria-labelledby="song-h">
     <h2 id="song-h">Song</h2>
@@ -33,7 +174,6 @@
       <button type="button" id="song-new">New song</button>
     </div>
     <input type="file" id="song-file" class="visually-hidden" accept=".json,application/json" tabindex="-1" aria-hidden="true">
-    <p id="studio-status" class="status" role="status"></p>
   </section>
 
   <section aria-labelledby="play-h">
@@ -234,6 +374,19 @@
     <h2 id="guide-h" tabindex="-1">Guide</h2>
     <p>I made this because I saw Orca, a music thing where every letter is an instrument, and I was like ok but what if typing a text message was a whole song. So now it is. Here's how to drive it.</p>
 
+
+    <h3>Beat studio</h3>
+    <ul>
+      <li>Play starts the beat and the same button stops it. Space does it too, and Escape always stops.</li>
+      <li>Pattern A is drop 1 and pattern B is drop 2. While it plays, pressing the other pattern switches on the next bar, after the switch FX. Auto switch flips between them every 4 or 8 bars by itself.</li>
+      <li>The grid has five tracks: Kick, Clap, Hi-hat, 808 and Lead, 16 steps each. Every step says what it is, like "Kick, step 5, on".</li>
+      <li>Keyboard: arrows move, Enter flips a step, Home and End jump to the first and last step. R on a hat step cycles single hit, roll in 32nds and triplet roll. Plus and minus change an 808 or lead note, S turns an 808 slide on or off.</li>
+      <li>On a phone: New hat steps picks what a hat step gets when you turn it on. The Note editor changes notes, slides and lengths for any step.</li>
+      <li>Key and Scale lock every note, so changing the key moves the whole beat with it.</li>
+      <li>Transition FX: tape stop, stutter, filter sweep, reverse and riser. They hit on the next bar.</li>
+      <li>Read pattern describes the whole pattern in words. Export WAV makes the file, Save in this browser keeps it here, and Download project file gives you a file to open later.</li>
+    </ul>
+
     <h3>Turn the sound on</h3>
     <p>Press Turn sound on at the top. You'll hear a little three note chime. If you hear nothing, flip the ring switch on the side of your phone off silent and turn the volume up. Phones are shy about web sounds until you tap something, so that button is the tap.</p>
 
@@ -397,6 +550,7 @@
 </footer>
 <script src="app.js"></script>
 <script src="studio.js"></script>
+<script src="beat.js"></script>
 <script src="tablab/engine.js"></script>
 <script src="tablab/tablab.js"></script>
 </body>
