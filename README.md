@@ -4,7 +4,7 @@ I made a thing where every letter you type plays a sound. Type a text, get a son
 
 Play it here: https://2three1y.github.io/letterorchestra/
 
-Now it's a beat studio first: the center of all musical chaos. Letters, the classic sequencer and TabLab are all still here, one tap away.
+Now it's a beat studio first: the center of all musical chaos. Letters and the classic sequencer are still here, one tap away.
 
 I got the idea from Orca by Hundred Rabbits, where every letter is an instrument. Mine is way simpler and way more chaotic.
 
@@ -51,14 +51,6 @@ Seven effects, kind of like the FL Studio mixer, each with an on button and a sl
 ## Demos
 
 Starter songs to learn from and remix: Lo-fi, Hip-hop boom bap, Trap, House, Synthwave, Chiptune, Drum and bass, Ambient and Hyperpop. Each one sets the tempo, instruments and effects. Load one, press Play it back, then wreck it.
-
-## TabLab
-
-TabLab is the beat maker Tab and I are building together, and now it's built right into Letter Orchestra. It's the TabLab beat maker section on the main page, so it's one app now. The old link https://2three1y.github.io/letterorchestra/tablab/ still works and sends you to that section.
-
-Pick a vibe (Rage, Digicore, Hyperpop SUPXR style, Trap half-time or Glitchcore), a tempo, a key and a length, then press Build beat. It makes a whole track in the browser: intro, drop, bridge, drop 2 and a big ending, with sliding 808s, hat rolls, supersaws, plucks and vowel chops that are synths, not voices. Extras: bomb timer, pitch dives, tape stop and vinyl crackle. Every build has a seed, so Build again makes a new version and typing an old seed gets one back. There's a track map with times so I know what's where, and Download beat WAV saves it for FL Studio. The presets Sub Wall and Detonator come from the Python beats Tab and I made first.
-
-The best part: turn on Melody from my letters and whatever I typed in Your text becomes the melody over the beat. Each letter is an eighth note at the beat's tempo, spaces are rests, and the notes climb from a to z like they do in Letter Orchestra, just moved into the beat's minor key. Vowels also sing as vowel chops. Lead sound picks what plays the melody: the vibe's own synth, any of the 17 Letter Orchestra instruments, or each letter's own instrument from when I typed it. The rest of the beat stays the same, so I can switch it on and off and hear just my melody change.
 
 ## Accessibility
 
