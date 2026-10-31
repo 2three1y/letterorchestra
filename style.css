@@ -57,13 +57,6 @@ button.minor{background:transparent;color:var(--fg);border-color:var(--line);fon
 .mix-ch fieldset{margin-bottom:.75rem}
 button:disabled{opacity:.5;cursor:not-allowed}
 
-/* TabLab beat maker */
-.check{display:flex;align-items:center;gap:.6rem;min-height:44px}
-.check input{width:1.4rem;height:1.4rem;margin:0;accent-color:var(--accent)}
-.check label{display:inline;margin:0}
-#tl-status{margin:.5rem 0;font-weight:600;color:var(--fg);padding:.6rem .8rem;border-left:4px solid var(--accent);background:var(--card)}
-#tl-map li{margin:.4rem 0}
-
 /* Beat studio: dark by default, compact, one hand on a phone */
 .modes ul{list-style:none;padding:0;margin:.5rem 0 0;display:flex;flex-wrap:wrap;gap:.4rem}
 .modes a{display:inline-flex;align-items:center;min-height:44px;padding:.3rem .9rem;border:2px solid var(--line);border-radius:999px;text-decoration:none;color:var(--fg);font-weight:600}
