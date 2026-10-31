@@ -4,7 +4,24 @@ I made a thing where every letter you type plays a sound. Type a text, get a son
 
 Play it here: https://2three1y.github.io/letterorchestra/
 
+Now it's a beat studio first: the center of all musical chaos. Letters, the classic sequencer and TabLab are all still here, one tap away.
+
 I got the idea from Orca by Hundred Rabbits, where every letter is an instrument. Mine is way simpler and way more chaotic.
+
+## Beat studio (the main mode)
+
+- Five tracks, 16 steps: Kick, Clap, Hi-hat, 808 and Lead. Every step is a real button that says what it is, like "Kick, step 5, on" or "808, step 14, on, E 1, slides in".
+- Patterns A and B, for drop 1 and drop 2. While it plays, press the other pattern and it switches on the next bar, after the switch FX. Auto switch flips every 4 or 8 bars. Copy to other pattern makes drop 2 a remix of drop 1 in one tap.
+- Hi-hat rolls: single hits, rolls in 32nds and triplet rolls.
+- 808 with slides: a slide note glides into its pitch instead of hitting again. It's in the key you pick.
+- Lead synth: saw, square or pluck, locked to the scale (minor or major, any root), so notes always fit. Chaos melody writes a new one for you.
+- Tempo 60 to 200 BPM, swing 0 to 60%.
+- Transition FX: tape stop, stutter, filter sweep, reverse and riser.
+- Presets from our sound bible: Dark 145 C# minor, Digicore 160 D major, Jerk 150 F# minor. Each one has a drop 1 and a drop 2.
+- Pattern readout: the whole pattern in words, so I can hear what's where without checking 80 buttons.
+- Export WAV renders drop 1, the switch FX and drop 2 (or just one pattern) as a 16-bit, 44.1 kHz stereo WAV, mastered around -9 LUFS, ending on a dead stop.
+- Projects autosave in the browser, Save in this browser keeps named beats, and Download project file / Open project file move them anywhere.
+- Keyboard: Space plays and stops, Escape stops, arrows move around the grid, Enter flips a step, R changes a hat roll, plus and minus change a note, S turns an 808 slide on or off.
 
 ## How it works
 
@@ -20,7 +37,7 @@ I got the idea from Orca by Hundred Rabbits, where every letter is an instrument
 - Save song downloads a song file you can open later with Open song. It also autosaves in your browser.
 - Download as audio (or Export WAV) makes a WAV (16-bit, 44.1 kHz stereo) of the letters plus the pattern, with effects and mixer, ready to drop into a DAW. The WAV encoder is hand-written, no libraries.
 
-## Studio
+## Classic studio
 
 - Step sequencer: tracks of 16 steps. Every step is a button that says what it is, like "Kick, step 5, on". Arrow keys work too.
 - Piano roll: any note from C2 to C6 on instrument tracks. Notes are a list you can read and edit (Note up, Longer, Move later and so on), plus a grid of buttons one octave at a time.
