@@ -795,10 +795,10 @@ exportBtn.addEventListener("click",function(){
     if(!blob){ exportStatus.textContent="This browser can't export audio, sorry."; return; }
     lastWav=blob;
     var url=URL.createObjectURL(blob), a=document.createElement("a");
-    a.href=url; a.download="letter-orchestra.wav"; a.style.display="none";
+    a.href=url; a.download="typewave.wav"; a.style.display="none";
     document.body.appendChild(a); a.click(); a.remove();
     setTimeout(function(){ URL.revokeObjectURL(url); },60000);
-    exportStatus.textContent="Saved letter-orchestra.wav";
+    exportStatus.textContent="Saved typewave.wav";
   }).catch(function(){ exportStatus.textContent="Export failed, sorry. Try again?"; });
 });
 
