@@ -1,4 +1,4 @@
-/* Letter Orchestra studio: song title, save/open, audio download, step sequencer, piano roll, mixer.
+/* Typewave studio: song title, save/open, audio download, step sequencer, piano roll, mixer.
    Plain JS, no libraries. Uses window.LetterOrchestraCore from app.js. */
 (function(){
 "use strict";
@@ -412,7 +412,7 @@ fileIn.addEventListener("change",function(){
   var f=fileIn.files&&fileIn.files[0]; if(!f) return;
   if(f.size>2000000){ say("That file is too big to be a song file."); return; }
   var r=new FileReader();
-  r.onload=function(){ try{ loadProject(JSON.parse(r.result)); save(); }catch(e){ say("That file isn't a Letter Orchestra song."); } $("song-open").focus(); };
+  r.onload=function(){ try{ loadProject(JSON.parse(r.result)); save(); }catch(e){ say("That file isn't a Typewave song."); } $("song-open").focus(); };
   r.onerror=function(){ say("Couldn't read that file."); };
   r.readAsText(f);
 });
