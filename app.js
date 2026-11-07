@@ -795,10 +795,10 @@ exportBtn.addEventListener("click",function(){
     if(!blob){ exportStatus.textContent="This browser can't export audio, sorry."; return; }
     lastWav=blob;
     var url=URL.createObjectURL(blob), a=document.createElement("a");
-    a.href=url; a.download="typewave.wav"; a.style.display="none";
+    a.href=url; a.download="keyjam.wav"; a.style.display="none";
     document.body.appendChild(a); a.click(); a.remove();
     setTimeout(function(){ URL.revokeObjectURL(url); },60000);
-    exportStatus.textContent="Saved typewave.wav";
+    exportStatus.textContent="Saved keyjam.wav";
   }).catch(function(){ exportStatus.textContent="Export failed, sorry. Try again?"; });
 });
 
