@@ -1,4 +1,4 @@
-# Typewave
+# KeyJam
 
 I made a thing where every letter you type plays a sound. Type a text, get a song. Now it has effects, demos and multiple tracks, and now a real studio side too: a step sequencer, a piano roll and a mixer. I want it to be FL Studio grade, but one you can actually use with VoiceOver.
 
