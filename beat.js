@@ -1,4 +1,4 @@
-/* Letter Orchestra Beat Studio: the center of all musical chaos.
+/* Typewave Beat Studio: the center of all musical chaos.
    Step sequencer with patterns A and B, hat rolls, sliding 808, scale-locked lead,
    swing, transition FX, presets, WAV export and project files.
    Plain JavaScript and the Web Audio API. No libraries, no samples, no requests. */
